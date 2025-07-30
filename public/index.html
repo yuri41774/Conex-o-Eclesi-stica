@@ -67,6 +67,41 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Estilos para o menu hambúrguer */
+        .hamburger-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 256px; /* Largura do menu */
+            height: 100%;
+            background-color: #1f2937; /* bg-gray-800 */
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 50; /* Acima de outros conteúdos */
+            box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hamburger-menu.open {
+            transform: translateX(0);
+        }
+
+        .hamburger-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 40; /* Abaixo do menu, mas acima do conteúdo principal */
+            display: none;
+        }
+        .hamburger-menu-overlay.open {
+            display: block;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 p-4 relative">
@@ -84,18 +119,57 @@
     <!-- Cabeçalho -->
     <header id="main-header" class="w-full max-w-4xl mx-auto bg-orange-600 text-white p-4 rounded-xl shadow-lg flex justify-between items-center mb-4 z-20 animate-fade-in-down hidden">
         <h1 class="text-3xl font-bold">Conexão Eclesiástica</h1>
-        <div class="flex space-x-2">
-            <button id="admin-button" class="bg-orange-800 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300">
-                Administrador
-            </button>
-            <button id="login-button" class="bg-orange-800 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300">
-                Login
-            </button>
-            <button id="logout-button" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 hidden">
-                Logout
+        <div class="flex items-center space-x-4">
+            <!-- Perfil do Usuário no Cabeçalho -->
+            <div id="user-profile-header" class="flex items-center space-x-2">
+                <img id="profile-avatar" class="w-10 h-10 rounded-full border-2 border-white hidden" src="https://placehold.co/40x40/cccccc/000000?text=👤" alt="Avatar do Usuário">
+                <span id="user-name-display" class="text-lg font-semibold">Visitante</span>
+            </div>
+            
+            <!-- Ícone do Menu Hambúrguer -->
+            <button id="hamburger-icon" class="flex flex-col justify-around w-8 h-8 bg-orange-700 p-1 rounded-md cursor-pointer" onclick="window.toggleHamburgerMenu()">
+                <span class="block h-0.5 bg-white rounded-full"></span>
+                <span class="block h-0.5 bg-white rounded-full"></span>
+                <span class="block h-0.5 bg-white rounded-full"></span>
             </button>
         </div>
     </header>
+
+    <!-- Menu Hambúrguer (Off-canvas) -->
+    <nav id="hamburger-menu" class="hamburger-menu">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-white">Menu</h2>
+            <button id="close-hamburger-menu" class="text-white hover:text-gray-300" onclick="window.toggleHamburgerMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <ul class="flex flex-col space-y-4">
+            <li>
+                <button id="menu-admin-button" class="w-full text-left bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-300" onclick="window.handleAdminClick(); window.toggleHamburgerMenu()">
+                    Administrador
+                </button>
+            </li>
+            <li>
+                <button id="menu-bible-button" class="w-full text-left bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-300" onclick="window.handleBibleClick(); window.toggleHamburgerMenu()">
+                    Bíblia
+                </button>
+            </li>
+            <li id="menu-login-item">
+                <button id="menu-login-button" class="w-full text-left bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300" onclick="window.toggleAuthModal(true); window.toggleHamburgerMenu()">
+                    Login
+                </button>
+            </li>
+            <li id="menu-logout-item" class="hidden">
+                <button id="menu-logout-button" class="w-full text-left bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300" onclick="handleLogout(); window.toggleHamburgerMenu()">
+                    Logout
+                </button>
+            </li>
+        </ul>
+    </nav>
+    <div id="hamburger-menu-overlay" class="hamburger-menu-overlay" onclick="window.toggleHamburgerMenu()"></div>
+
 
     <!-- Conteúdo da Aplicação Principal (inicialmente oculto) -->
     <div id="app-content" class="hidden bg-white rounded-xl shadow-2xl p-8 w-full max-w-4xl mx-auto text-center">
@@ -107,61 +181,6 @@
         <p class="text-sm text-gray-500 mb-6">
             Seu ID de Usuário: <span id="user-id-display" class="font-mono bg-gray-100 px-2 py-1 rounded-md text-purple-600 break-all"></span>
         </p>
-
-        <!-- Nova Seção de Estudo Bíblico Inteligente -->
-        <div class="mt-8 bg-green-50 p-6 rounded-lg shadow-inner">
-            <h2 class="text-3xl font-bold text-green-700 mb-4">Estudo Bíblico Inteligente ✨</h2>
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
-                <textarea
-                    id="bible-question-input"
-                    placeholder="Pergunte sobre um versículo, tema ou conceito bíblico (ex: 'Explique João 3:16', 'O que é a Graça de Deus?')"
-                    rows="4"
-                    class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 resize-y"
-                ></textarea>
-                <button
-                    id="generate-bible-study-button"
-                    class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition duration-300 ease-in-out shadow-md self-end md:self-auto"
-                >
-                    Gerar Estudo
-                </button>
-            </div>
-            <div id="bible-loading-indicator" class="hidden flex justify-center items-center py-4">
-                <div class="spinner"></div>
-                <p class="ml-2 text-gray-600">Gerando resposta...</p>
-            </div>
-            <div id="bible-response-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800">
-                <!-- A resposta da IA aparecerá aqui -->
-                <p class="text-gray-500 italic">Sua resposta será exibida aqui.</p>
-            </div>
-        </div>
-
-        <!-- Nova Seção de Gerador de Orações Personalizadas -->
-        <div class="mt-8 bg-purple-500 p-6 rounded-lg shadow-inner">
-            <h2 class="text-3xl font-bold text-white mb-4">Gerador de Orações Personalizadas ✨</h2>
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
-                <textarea
-                    id="prayer-topic-input"
-                    placeholder="Descreva o tema da sua oração (ex: 'gratidão pela família', 'força em tempos difíceis', 'sabedoria para decisões')"
-                    rows="4"
-                    class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-700 resize-y"
-                ></textarea>
-                <button
-                    id="generate-prayer-button"
-                    class="bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-800 transition duration-300 ease-in-out shadow-md self-end md:self-auto"
-                >
-                    Gerar Oração
-                </button>
-            </div>
-            <div id="prayer-loading-indicator" class="hidden flex justify-center items-center py-4">
-                <div class="spinner"></div>
-                <p class="ml-2 text-white">Gerando oração...</p>
-            </div>
-            <div id="prayer-response-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800">
-                <!-- A oração gerada pela IA aparecerá aqui -->
-                <p class="text-gray-500 italic">Sua oração personalizada será exibida aqui.</p>
-            </div>
-        </div>
-
 
         <!-- Seção de Posts -->
         <div class="mt-8 bg-blue-50 p-6 rounded-lg shadow-inner">
@@ -185,74 +204,140 @@
                 </button>
             </div>
         </div>
+    </div>
 
-        <!-- Nova Seção de Leitura Bíblica -->
-        <div class="mt-8 bg-yellow-50 p-6 rounded-lg shadow-inner">
-            <h2 class="text-3xl font-bold text-yellow-700 mb-4">Leitura Bíblica 📖</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div>
-                    <label for="bible-book-select" class="block text-gray-700 text-sm font-bold mb-2 text-left">Livro:</label>
-                    <select id="bible-book-select" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500">
-                        <!-- Opções serão preenchidas via JavaScript -->
-                    </select>
-                </div>
-                <div>
-                    <label for="bible-version-select" class="block text-gray-700 text-sm font-bold mb-2 text-left">Versão:</label>
-                    <select id="bible-version-select" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500">
-                        <!-- Opções serão preenchidas via JavaScript -->
-                    </select>
-                </div>
-                <div>
-                    <label for="bible-chapter-input" class="block text-gray-700 text-sm font-bold mb-2 text-left">Capítulo:</label>
-                    <input type="number" id="bible-chapter-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500" placeholder="23" value="1">
-                </div>
-                <div>
-                    <label for="bible-verses-input" class="block text-gray-700 text-sm font-bold mb-2 text-left">Versículos (opcional, ex: 1-3 ou 5):</label>
-                    <input type="text" id="bible-verses-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500" placeholder="1-6">
-                </div>
-            </div>
-            <button
-                id="fetch-bible-verse-button"
-                class="bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-700 transition duration-300 ease-in-out shadow-md w-full md:w-auto"
-            >
-                Buscar Versículo(s)
+    <!-- Nova Tela Exclusiva para a Bíblia -->
+    <div id="bible-screen" class="hidden fixed inset-0 bg-gradient-to-br from-green-100 to-teal-200 flex flex-col items-center justify-start p-4 z-30 overflow-y-auto">
+        <div class="w-full max-w-4xl bg-white rounded-xl shadow-2xl p-8 text-center relative">
+            <button id="close-bible-screen-button" onclick="window.toggleBibleScreen()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
             </button>
-            <div id="bible-verse-loading-indicator" class="hidden flex justify-center items-center py-4">
-                <div class="spinner"></div>
-                <p class="ml-2 text-gray-600">Buscando versículo(s)...</p>
-            </div>
-            <div id="bible-verse-display-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800 mt-4">
-                <p class="text-gray-500 italic">O versículo ou passagem bíblica aparecerá aqui.</p>
-            </div>
-        </div>
 
-        <!-- Nova Seção de Busca na Bíblia por Palavra-chave -->
-        <div class="mt-8 bg-red-50 p-6 rounded-lg shadow-inner">
-            <h2 class="text-3xl font-bold text-red-700 mb-4">Buscar na Bíblia por Palavra-chave 🔍</h2>
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
-                <input
-                    type="text"
-                    id="bible-search-input"
-                    placeholder="Digite uma palavra ou frase para buscar (ex: 'amor', 'fé', 'salvação')"
-                    class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                />
+            <h2 class="text-3xl font-bold text-center text-teal-700 mb-6">Central Bíblica 📖✨</h2>
+            <p class="text-gray-700 mb-8">Explore as escrituras e ferramentas de estudo.</p>
+
+            <!-- Seção de Estudo Bíblico Inteligente -->
+            <div class="mt-8 bg-green-50 p-6 rounded-lg shadow-inner">
+                <h3 class="text-2xl font-bold text-green-700 mb-4">Estudo Bíblico Inteligente</h3>
+                <div class="flex flex-col md:flex-row gap-4 mb-4">
+                    <textarea
+                        id="bible-question-input"
+                        placeholder="Pergunte sobre um versículo, tema ou conceito bíblico (ex: 'Explique João 3:16', 'O que é a Graça de Deus?')"
+                        rows="4"
+                        class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 resize-y"
+                    ></textarea>
+                    <button
+                        id="generate-bible-study-button"
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition duration-300 ease-in-out shadow-md self-end md:self-auto"
+                    >
+                        Gerar Estudo
+                    </button>
+                </div>
+                <div id="bible-loading-indicator" class="hidden flex justify-center items-center py-4">
+                    <div class="spinner"></div>
+                    <p class="ml-2 text-gray-600">Gerando resposta...</p>
+                </div>
+                <div id="bible-response-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800">
+                    <p class="text-gray-500 italic">Sua resposta será exibida aqui.</p>
+                </div>
+            </div>
+
+            <!-- Seção de Gerador de Orações Personalizadas -->
+            <div class="mt-8 bg-purple-100 p-6 rounded-lg shadow-inner">
+                <h3 class="text-2xl font-bold text-purple-700 mb-4">Gerador de Orações Personalizadas</h3>
+                <div class="flex flex-col md:flex-row gap-4 mb-4">
+                    <textarea
+                        id="prayer-topic-input"
+                        placeholder="Descreva o tema da sua oração (ex: 'gratidão pela família', 'força em tempos difíceis', 'sabedoria para decisões')"
+                        rows="4"
+                        class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-700 resize-y"
+                    ></textarea>
+                    <button
+                        id="generate-prayer-button"
+                        class="bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-800 transition duration-300 ease-in-out shadow-md self-end md:self-auto"
+                    >
+                        Gerar Oração
+                    </button>
+                </div>
+                <div id="prayer-loading-indicator" class="hidden flex justify-center items-center py-4">
+                    <div class="spinner"></div>
+                    <p class="ml-2 text-gray-600">Gerando oração...</p>
+                </div>
+                <div id="prayer-response-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800">
+                    <p class="text-gray-500 italic">Sua oração personalizada será exibida aqui.</p>
+                </div>
+            </div>
+
+            <!-- Seção de Leitura Bíblica -->
+            <div class="mt-8 bg-yellow-50 p-6 rounded-lg shadow-inner">
+                <h3 class="text-2xl font-bold text-yellow-700 mb-4">Leitura Bíblica</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label for="bible-book-select" class="block text-gray-700 text-sm font-bold mb-2 text-left">Livro:</label>
+                        <select id="bible-book-select" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500">
+                            <!-- Opções serão preenchidas via JavaScript -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="bible-version-select" class="block text-gray-700 text-sm font-bold mb-2 text-left">Versão:</label>
+                        <select id="bible-version-select" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500">
+                            <!-- Opções serão preenchidas via JavaScript -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="bible-chapter-input" class="block text-gray-700 text-sm font-bold mb-2 text-left">Capítulo:</label>
+                        <input type="number" id="bible-chapter-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500" placeholder="23" value="1">
+                    </div>
+                    <div>
+                        <label for="bible-verses-input" class="block text-gray-700 text-sm font-bold mb-2 text-left">Versículos (opcional, ex: 1-3 ou 5):</label>
+                        <input type="text" id="bible-verses-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500" placeholder="1-6">
+                    </div>
+                </div>
                 <button
-                    id="search-bible-button"
-                    class="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition duration-300 ease-in-out shadow-md self-end md:self-auto"
+                    id="fetch-bible-verse-button"
+                    class="bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-700 transition duration-300 ease-in-out shadow-md w-full md:w-auto"
                 >
-                    Buscar
+                    Buscar Versículo(s)
                 </button>
+                <div id="bible-verse-loading-indicator" class="hidden flex justify-center items-center py-4">
+                    <div class="spinner"></div>
+                    <p class="ml-2 text-gray-600">Buscando versículo(s)...</p>
+                </div>
+                <div id="bible-verse-display-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800 mt-4">
+                    <p class="text-gray-500 italic">O versículo ou passagem bíblica aparecerá aqui.</p>
+                </div>
             </div>
-            <div id="bible-search-loading-indicator" class="hidden flex justify-center items-center py-4">
-                <div class="spinner"></div>
-                <p class="ml-2 text-gray-600">Buscando...</p>
+
+            <!-- Seção de Busca na Bíblia por Palavra-chave -->
+            <div class="mt-8 bg-red-50 p-6 rounded-lg shadow-inner">
+                <h3 class="text-2xl font-bold text-red-700 mb-4">Buscar na Bíblia por Palavra-chave</h3>
+                <div class="flex flex-col md:flex-row gap-4 mb-4">
+                    <input
+                        type="text"
+                        id="bible-search-input"
+                        placeholder="Digite uma palavra ou frase para buscar (ex: 'amor', 'fé', 'salvação')"
+                        class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                    <button
+                        id="search-bible-button"
+                        class="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition duration-300 ease-in-out shadow-md self-end md:self-auto"
+                    >
+                        Buscar
+                    </button>
+                </div>
+                <div id="bible-search-loading-indicator" class="hidden flex justify-center items-center py-4">
+                    <div class="spinner"></div>
+                    <p class="ml-2 text-gray-600">Buscando...</p>
+                </div>
+                <div id="bible-search-results-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800">
+                    <p class="text-gray-500 italic">Os resultados da busca aparecerão aqui.</p>
+                </div>
             </div>
-            <div id="bible-search-results-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800">
-                <p class="text-gray-500 italic">Os resultados da busca aparecerão aqui.</p>
-            </div>
+
+            <button class="mt-8 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg" onclick="window.toggleBibleScreen()">Voltar para o Início</button>
         </div>
-
-
     </div>
 
     <!-- Botão para alternar o chat flutuante -->
@@ -467,8 +552,9 @@
 
         // Configurações do Firebase (fornecidas pelo usuário)
         const firebaseConfig = {
-            apiKey: "AIzaSyBfFQ0wZIe1WY0Lw3L0Rlr97UrnnSydurM",
+            apiKey: "AIzaSyBfFQ0wZIe1WY0Lw3L0Rlr97UrnnSydurM", // Chave de API do Firebase
             authDomain: "conexao-eclesiastica.firebaseapp.com",
+            databaseURL: "https://conexao-eclesiastica-default-rtdb.firebaseio.com", // Adicionado
             projectId: "conexao-eclesiastica",
             storageBucket: "conexao-eclesiastica.firebasestorage.app",
             messagingSenderId: "1009771043961",
@@ -503,7 +589,7 @@
             { abbrev: { pt: "ec", en: "ec" }, name: "Eclesiastes", author: "Salomão", chapters: 12, group: "Poéticos", testament: "VT" },
             { abbrev: { pt: "ct", en: "so" }, name: "Cantares de Salomão", author: "Salomão", chapters: 8, group: "Poéticos", testament: "VT" },
             { abbrev: { pt: "is", en: "is" }, name: "Isaías", author: "Isaías", chapters: 66, group: "Profetas Maiores", testament: "VT" },
-            { abbrev: { pt: "jr", en: "jr" }, name: "Jeremias", author: "Jeremias", chapters: 52, group: "Profetas Maiores", testament: "VT" },
+            { abbrev: { pt: "jr", en: "jr" }, name: "Jeremias", chapters: 52, group: "Profetas Maiores", testament: "VT" },
             { abbrev: { pt: "lm", en: "la" }, name: "Lamentações de Jeremias", author: "Jeremias", chapters: 5, group: "Profetas Maiores", testament: "VT" },
             { abbrev: { pt: "ez", en: "ez" }, name: "Ezequiel", author: "Ezequiel", chapters: 48, group: "Profetas Maiores", testament: "VT" },
             { abbrev: { pt: "dn", en: "dn" }, name: "Daniel", author: "Daniel", chapters: 12, group: "Profetas Maiores", testament: "VT" },
@@ -585,16 +671,21 @@
                         const userProfileSnap = await getDoc(userProfileRef);
                         if (userProfileSnap.exists() && userProfileSnap.data().firstName) {
                             userName = userProfileSnap.data().firstName;
+                            document.getElementById('user-name-display').textContent = userName; // Atualiza o nome no cabeçalho
+                            document.getElementById('profile-avatar').classList.remove('hidden'); // Mostra o avatar
                             document.getElementById('user-id-display').textContent = `${userName} (${userId.substring(0, 8)}...)`;
                         } else {
                             userName = null; // Reseta o nome se não encontrado
+                            document.getElementById('user-name-display').textContent = user.isAnonymous ? 'Convidado' : 'Usuário'; // Exibe "Convidado" ou "Usuário"
+                            document.getElementById('profile-avatar').classList.add('hidden'); // Esconde o avatar para visitantes
                             document.getElementById('user-id-display').textContent = user.isAnonymous ? `${userId} (Anônimo)` : userId;
                         }
                         
-                        const loginButton = document.getElementById('login-button');
-                        if (loginButton) loginButton.classList.add('hidden');
-                        const logoutButton = document.getElementById('logout-button');
-                        if (logoutButton) logoutButton.classList.remove('hidden');
+                        // Os botões de login/logout no cabeçalho principal foram movidos para o menu hambúrguer
+                        // const loginButton = document.getElementById('login-button');
+                        // if (loginButton) loginButton.classList.add('hidden');
+                        // const logoutButton = document.getElementById('logout-button');
+                        // if (logoutButton) logoutButton.classList.remove('hidden');
                         
                         const addPostSection = document.getElementById('add-post-section');
                         if (user.isAnonymous) {
@@ -602,18 +693,39 @@
                         } else {
                             if (addPostSection) addPostSection.classList.remove('hidden');
                         }
+
+                        // Atualiza visibilidade dos botões no menu hambúrguer
+                        const menuLoginItem = document.getElementById('menu-login-item');
+                        const menuLogoutItem = document.getElementById('menu-logout-item');
+                        if (menuLoginItem) menuLoginItem.classList.add('hidden');
+                        if (menuLogoutItem) menuLogoutItem.classList.remove('hidden');
+
                     } else {
                         userId = null;
                         userName = null; // Reseta o nome ao deslogar
                         console.log("Usuário não autenticado.");
                         const userIdDisplay = document.getElementById('user-id-display');
                         if (userIdDisplay) userIdDisplay.textContent = 'Não disponível';
-                        const loginButton = document.getElementById('login-button');
-                        if (loginButton) loginButton.classList.remove('hidden');
-                        const logoutButton = document.getElementById('logout-button');
-                        if (logoutButton) logoutButton.classList.add('hidden');
+                        const userNameDisplay = document.getElementById('user-name-display');
+                        if (userNameDisplay) userNameDisplay.textContent = 'Visitante'; // Define como Visitante
+                        const profileAvatar = document.getElementById('profile-avatar');
+                        if (profileAvatar) profileAvatar.classList.add('hidden'); // Esconde o avatar para visitantes
+                        
+                        // Os botões de login/logout no cabeçalho principal foram movidos para o menu hambúrguer
+                        // const loginButton = document.getElementById('login-button');
+                        // if (loginButton) loginButton.classList.remove('hidden');
+                        // const logoutButton = document.getElementById('logout-button');
+                        // if (logoutButton) logoutButton.classList.add('hidden');
+                        
                         const addPostSection = document.getElementById('add-post-section');
                         if (addPostSection) addPostSection.classList.add('hidden');
+
+                        // Atualiza visibilidade dos botões no menu hambúrguer
+                        const menuLoginItem = document.getElementById('menu-login-item');
+                        const menuLogoutItem = document.getElementById('menu-logout-item');
+                        if (menuLoginItem) menuLoginItem.classList.remove('hidden');
+                        if (menuLogoutItem) menuLogoutItem.classList.add('hidden');
+
 
                         if (initialAuthToken) {
                             try {
@@ -825,7 +937,7 @@
         };
 
         // Funções para o Modal de Autenticação
-        const toggleAuthModal = (showLogin = true) => {
+        window.toggleAuthModal = (showLogin = true) => { // Tornada global
             const authModal = document.getElementById('auth-modal');
             if (!authModal) return;
             authModal.classList.toggle('hidden');
@@ -886,7 +998,7 @@
                 const userCredential = await signInAnonymously(auth);
                 const user = userCredential.user;
                 showNotification("Login como convidado realizado com sucesso!", 'success');
-                toggleAuthModal(false); // Fecha o modal de autenticação
+                window.toggleAuthModal(false); // Fecha o modal de autenticação
 
                 const usernameModal = document.getElementById('username-modal');
                 const anonymousUsernameInput = document.getElementById('anonymous-username-input');
@@ -987,7 +1099,7 @@
                 });
 
                 showNotification("Registro e login bem-sucedidos!", 'success');
-                toggleAuthModal(false);
+                window.toggleAuthModal(false); // Chamada corrigida
                 document.getElementById('register-form').reset();
             }
             catch (error) {
@@ -1013,7 +1125,7 @@
             try {
                 await signInWithEmailAndPassword(auth, email, password);
                 showNotification("Login bem-sucedido!", 'success');
-                toggleAuthModal(false);
+                window.toggleAuthModal(false); // Chamada corrigida
                 document.getElementById('login-form').reset();
             } catch (error) {
                 let errorMessage = "Erro ao fazer login. Verifique suas credenciais.";
@@ -1045,14 +1157,19 @@
             const header = document.getElementById('main-header'); // Usando ID
             const floatingChatButton = document.getElementById('toggle-floating-chat-button');
             const footer = document.getElementById('main-footer'); // Usando ID
+            const hamburgerMenu = document.getElementById('hamburger-menu');
+            const hamburgerOverlay = document.getElementById('hamburger-menu-overlay');
 
-            if (adminScreen && appContent && header && floatingChatButton && footer) { // Verifica se todos os elementos existem
+
+            if (adminScreen && appContent && header && floatingChatButton && footer && hamburgerMenu && hamburgerOverlay) { // Verifica se todos os elementos existem
                 if (adminScreen.classList.contains('hidden')) {
                     // Entrando na tela de administração
                     appContent.classList.add('hidden');
                     header.classList.add('hidden');
                     floatingChatButton.classList.add('hidden');
                     footer.classList.add('hidden');
+                    hamburgerMenu.classList.remove('open'); // Fecha o menu hambúrguer se estiver aberto
+                    hamburgerOverlay.classList.remove('open'); // Esconde o overlay
                     adminScreen.classList.remove('hidden');
                     window.loadAdminDashboard();
                 } else {
@@ -1072,6 +1189,82 @@
         // Atribui handleAdminClick ao window para ser chamado pelo botão "Administrador"
         window.handleAdminClick = () => {
             window.toggleAdminScreen();
+        };
+
+        // Nova função para alternar a tela da Bíblia
+        window.toggleBibleScreen = () => {
+            const bibleScreen = document.getElementById('bible-screen');
+            const appContent = document.getElementById('app-content');
+            const header = document.getElementById('main-header');
+            const floatingChatButton = document.getElementById('toggle-floating-chat-button');
+            const footer = document.getElementById('main-footer');
+            const hamburgerMenu = document.getElementById('hamburger-menu');
+            const hamburgerOverlay = document.getElementById('hamburger-menu-overlay');
+
+
+            if (bibleScreen && appContent && header && floatingChatButton && footer && hamburgerMenu && hamburgerOverlay) {
+                if (bibleScreen.classList.contains('hidden')) {
+                    // Entrando na tela da Bíblia
+                    appContent.classList.add('hidden');
+                    header.classList.add('hidden'); // Oculta o cabeçalho na tela da Bíblia
+                    floatingChatButton.classList.add('hidden'); // Oculta o botão de chat
+                    footer.classList.add('hidden'); // Oculta o rodapé
+                    hamburgerMenu.classList.remove('open'); // Fecha o menu hambúrguer se estiver aberto
+                    hamburgerOverlay.classList.remove('open'); // Esconde o overlay
+                    bibleScreen.classList.remove('hidden');
+                    // Opcional: recarregar dropdowns ou dados se necessário
+                    populateBibleBooksDropdown();
+                    populateBibleVersionsDropdown();
+                } else {
+                    // Saindo da tela da Bíblia
+                    bibleScreen.classList.add('hidden');
+                    appContent.classList.remove('hidden');
+                    header.classList.remove('hidden'); // Mostra o cabeçalho
+                    floatingChatButton.classList.remove('hidden'); // Mostra o botão de chat
+                    footer.classList.remove('hidden'); // Mostra o rodapé
+                }
+            } else {
+                console.error("Erro: Um ou mais elementos essenciais para alternar a tela da Bíblia não foram encontrados.");
+                showNotification("Erro ao alternar tela da Bíblia.", 'error');
+            }
+        };
+
+        // Atribui handleBibleClick ao window para ser chamado pelo botão "Bíblia"
+        window.handleBibleClick = () => {
+            window.toggleBibleScreen();
+        };
+
+        // Função para alternar o chat flutuante
+        window.toggleFloatingChat = () => {
+            const floatingChatContainer = document.getElementById('floating-chat-container');
+            const hamburgerMenu = document.getElementById('hamburger-menu');
+            const hamburgerOverlay = document.getElementById('hamburger-menu-overlay');
+
+            if (!floatingChatContainer) return;
+
+            floatingChatContainer.classList.toggle('hidden');
+            // Fecha o menu hambúrguer se estiver aberto ao abrir/fechar o chat
+            if (hamburgerMenu && hamburgerMenu.classList.contains('open')) {
+                hamburgerMenu.classList.remove('open');
+                if (hamburgerOverlay) hamburgerOverlay.classList.remove('open');
+            }
+        };
+
+        // Função para alternar o menu hambúrguer
+        window.toggleHamburgerMenu = () => {
+            const hamburgerMenu = document.getElementById('hamburger-menu');
+            const hamburgerOverlay = document.getElementById('hamburger-menu-overlay');
+            const floatingChatContainer = document.getElementById('floating-chat-container');
+
+            if (!hamburgerMenu || !hamburgerOverlay) return;
+
+            hamburgerMenu.classList.toggle('open');
+            hamburgerOverlay.classList.toggle('open');
+
+            // Fecha o chat flutuante se estiver aberto ao abrir/fechar o menu hambúrguer
+            if (floatingChatContainer && !floatingChatContainer.classList.contains('hidden')) {
+                floatingChatContainer.classList.add('hidden');
+            }
         };
 
 
@@ -1129,7 +1322,7 @@
 
                 // Em um cenário real, você faria uma requisição fetch para seu backend de administração:
                 /*
-                const token_do_administrador = "eyJhbGciOiJIU..."; // Obtenha o token do usuário administrador logado
+                const token_do_administrador = await auth.currentUser.getIdToken();
                 const response = await fetch('/api/admin/users', {
                     method: 'GET',
                     headers: {
@@ -1358,6 +1551,8 @@
 
 
         // Função para chamar a API Gemini para estudo bíblico
+        // Protege a chave Gemini em produção (exemplo didático)
+        const GEMINI_API_KEY = "AIzaSyAXSNFBenSCk7wWscAafWILt45vok8cnMU"; // Chave de API do Gemini fornecida pelo usuário
         const generateBibleStudy = async () => {
             const bibleQuestionInput = document.getElementById('bible-question-input');
             const bibleResponseArea = document.getElementById('bible-response-area');
@@ -1369,35 +1564,18 @@
                 return;
             }
 
-            bibleResponseArea.textContent = ''; // Limpa a área de resposta
-            if (bibleLoadingIndicator) bibleLoadingIndicator.classList.remove('hidden'); // Mostra o indicador de carregamento
+            bibleResponseArea.textContent = '';
+            showGlobalLoading(true);
+            if (bibleLoadingIndicator) bibleLoadingIndicator.classList.remove('hidden');
 
             try {
                 const prompt = `Explique o seguinte conceito ou versículo bíblico de forma clara e concisa, baseando-se em conhecimento bíblico: "${question}".`;
                 let chatHistory = [];
                 chatHistory.push({ role: "user", parts: [{ text: prompt }] });
                 const payload = { contents: chatHistory };
-                const apiKey = ""; // Deixe vazio, será fornecido pelo ambiente Canvas
+                const apiKey = GEMINI_API_KEY;
+                if (!apiKey) throw new Error("Chave Gemini não definida. Configure window.GEMINI_API_KEY.");
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                // Exemplo de chamada cURL para documentação:
-                /*
-                curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent" \
-                -H 'Content-Type: application/json' \
-                -H 'X-goog-api-key: SEU_API_KEY_AQUI' \
-                -X POST \
-                -d '{
-                    "contents": [
-                        {
-                            "parts": [
-                                {
-                                    "text": "Explique como a IA funciona em poucas palavras"
-                                }
-                            ]
-                        }
-                    ]
-                }'
-                */
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -1423,7 +1601,8 @@
                 showNotification("Erro na conexão com a IA.", 'error');
                 console.error("Erro na chamada da API Gemini:", error);
             } finally {
-                if (bibleLoadingIndicator) bibleLoadingIndicator.classList.add('hidden'); // Esconde o indicador de carregamento
+                if (bibleLoadingIndicator) bibleLoadingIndicator.classList.add('hidden');
+                showGlobalLoading(false);
             }
         };
 
@@ -1630,12 +1809,13 @@
             prayerResponseArea.textContent = ''; // Limpa a área de resposta
             prayerLoadingIndicator.classList.remove('hidden'); // Mostra o indicador de carregamento
 
+            showGlobalLoading(true);
             try {
                 const prompt = `Gere uma oração inspiradora e relevante sobre o seguinte tema: "${topic}". Mantenha a oração com cerca de 50-100 palavras.`;
                 let chatHistory = [];
                 chatHistory.push({ role: "user", parts: [{ text: prompt }] });
                 const payload = { contents: chatHistory };
-                const apiKey = ""; // Deixe vazio, será fornecido pelo ambiente Canvas
+                const apiKey = "AIzaSyAXSNFBenSCk7wWscAafWILt45vok8cnMU"; // Chave de API do Gemini fornecida pelo usuário
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
                 const response = await fetch(apiUrl, {
@@ -1668,30 +1848,112 @@
 
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Exibe um loading global na tela
+            function showGlobalLoading(show) {
+                let loadingDiv = document.getElementById('global-loading-indicator');
+                if (!loadingDiv) {
+                    loadingDiv = document.createElement('div');
+                    loadingDiv.id = 'global-loading-indicator';
+                    loadingDiv.style.position = 'fixed';
+                    loadingDiv.style.top = '0';
+                    loadingDiv.style.left = '0';
+                    loadingDiv.style.width = '100vw';
+                    loadingDiv.style.height = '100vh';
+                    loadingDiv.style.background = 'rgba(0,0,0,0.3)';
+                    loadingDiv.style.display = 'flex';
+                    loadingDiv.style.alignItems = 'center';
+                    loadingDiv.style.justifyContent = 'center';
+                    loadingDiv.style.zIndex = '9999';
+                    loadingDiv.innerHTML = '<div style="background:#fff;padding:32px 48px;border-radius:16px;box-shadow:0 2px 16px #0002;font-size:1.2rem;font-weight:bold;">Carregando...</div>';
+                    document.body.appendChild(loadingDiv);
+                }
+                loadingDiv.style.display = show ? 'flex' : 'none';
+            }
             // Adiciona listeners com verificações de existência
-            const floatingSendMessageButton = document.getElementById('floating-send-message-input');
-            if (floatingSendMessageButton) floatingSendMessageButton.addEventListener('click', sendMessage);
+            // DICA DE SEGURANÇA: Defina window.GEMINI_API_KEY em ambiente seguro para produção.
+            const floatingSendMessageButton = document.getElementById('floating-send-message-button');
+            if (floatingSendMessageButton) {
+                floatingSendMessageButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sendMessage();
+                });
+                floatingSendMessageButton.setAttribute('aria-label', 'Enviar mensagem no chat');
+                floatingSendMessageButton.setAttribute('tabindex', '0');
+            }
 
             const addPostButton = document.getElementById('add-post-button');
-            if (addPostButton) addPostButton.addEventListener('click', addPost);
+            if (addPostButton) {
+                addPostButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    addPost();
+                });
+                addPostButton.setAttribute('aria-label', 'Publicar post');
+                addPostButton.setAttribute('tabindex', '0');
+            }
 
             const adminButton = document.getElementById('admin-button');
-            if (adminButton) adminButton.addEventListener('click', window.handleAdminClick);
+            if (adminButton) {
+                adminButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.handleAdminClick();
+                });
+                adminButton.setAttribute('aria-label', 'Abrir painel de administração');
+                adminButton.setAttribute('tabindex', '0');
+            }
+
+            // Adicionado listener para o novo botão da Bíblia
+            const bibleButton = document.getElementById('bible-button');
+            if (bibleButton) {
+                bibleButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.handleBibleClick();
+                });
+                bibleButton.setAttribute('aria-label', 'Abrir tela da Bíblia');
+                bibleButton.setAttribute('tabindex', '0');
+            }
 
             const toggleFloatingChatButton = document.getElementById('toggle-floating-chat-button');
-            if (toggleFloatingChatButton) toggleFloatingChatButton.addEventListener('click', window.toggleFloatingChat);
+            if (toggleFloatingChatButton) {
+                toggleFloatingChatButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.toggleFloatingChat();
+                });
+                toggleFloatingChatButton.setAttribute('aria-label', 'Abrir ou fechar chat flutuante');
+                toggleFloatingChatButton.setAttribute('tabindex', '0');
+            }
 
             const closeFloatingChatButton = document.getElementById('close-floating-chat-button');
-            if (closeFloatingChatButton) closeFloatingChatButton.addEventListener('click', window.toggleFloatingChat);
+            if (closeFloatingChatButton) {
+                closeFloatingChatButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.toggleFloatingChat();
+                });
+                closeFloatingChatButton.setAttribute('aria-label', 'Fechar chat flutuante');
+                closeFloatingChatButton.setAttribute('tabindex', '0');
+            }
 
             const loginButton = document.getElementById('login-button');
-            if (loginButton) loginButton.addEventListener('click', () => toggleAuthModal(true));
+            if (loginButton) {
+                loginButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.toggleAuthModal(true); // Chamada corrigida
+                });
+                loginButton.setAttribute('aria-label', 'Abrir modal de login');
+                loginButton.setAttribute('tabindex', '0');
+            }
 
             const logoutButton = document.getElementById('logout-button');
-            if (logoutButton) logoutButton.addEventListener('click', handleLogout);
+            if (logoutButton) {
+                logoutButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    handleLogout();
+                });
+                logoutButton.setAttribute('aria-label', 'Fazer logout');
+                logoutButton.setAttribute('tabindex', '0');
+            }
 
             const closeAuthModalButton = document.getElementById('close-auth-modal-button');
-            if (closeAuthModalButton) closeAuthModalButton.addEventListener('click', () => toggleAuthModal(false));
+            if (closeAuthModalButton) closeAuthModalButton.addEventListener('click', () => window.toggleAuthModal(false)); // Chamada corrigida
 
             const showRegisterFormButton = document.getElementById('show-register-form-button');
             if (showRegisterFormButton) showRegisterFormButton.addEventListener('click', showRegisterForm);
