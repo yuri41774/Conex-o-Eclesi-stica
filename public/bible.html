@@ -359,51 +359,76 @@
             bibleVerseDisplayArea.innerHTML = '';
             bibleVerseLoadingIndicator.classList.remove('hidden');
 
-            let apiUrl = `https://www.abibliadigital.com.br/api/verses/${selectedVersion}/${selectedBookAbbrevPt}/${chapterNumber}`;
-            
-            if (versesRange && !versesRange.includes('-')) {
-                apiUrl += `/${versesRange}`;
-            }
-
+            // 1. Tenta buscar na API pública (abibliadigital.com.br)
+            let found = false;
             try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                if (response.ok && data.verses && data.verses.length > 0) {
-                    let versesToDisplay = data.verses;
-                    
-                    if (versesRange && versesRange.includes('-')) {
-                        const [startVerse, endVerse] = versesRange.split('-').map(Number);
-                        versesToDisplay = data.verses.filter(verse => verse.number >= startVerse && verse.number <= endVerse);
-                    } else if (versesRange && !isNaN(Number(versesRange))) {
-                        versesToDisplay = data.verses.filter(verse => verse.number === Number(versesRange));
-                    }
-
-                    if (versesToDisplay.length > 0) {
-                        let formattedOutput = `
-                            <h4 class="text-lg font-bold text-gray-800 mb-2">${data.book.name} ${data.chapter.number} (${data.version})</h4>
-                        `;
-                        versesToDisplay.forEach(verse => {
-                            formattedOutput += `<p class="mb-1"><span class="font-semibold">${verse.number}.</span> ${verse.text}</p>`;
-                        });
-                        bibleVerseDisplayArea.innerHTML = formattedOutput;
-                        showNotification("Versículo(s) encontrado(s)!", 'success');
-                    } else {
-                        bibleVerseDisplayArea.innerHTML = `<p class="text-red-500">Versículo(s) não encontrado(s) no capítulo especificado. Verifique o intervalo.</p>`;
-                        showNotification("Versículo(s) não encontrado(s).", 'error');
-                    }
-                } else {
-                    bibleVerseDisplayArea.innerHTML = `<p class="text-red-500">Não foi possível encontrar o versículo. Verifique o livro, capítulo e versão.</p>`;
-                    showNotification("Versículo(s) não encontrado(s).", 'error');
-                    console.error("Erro na resposta da API da Bíblia:", data);
+                let apiUrl = `https://www.abibliadigital.com.br/api/verses/${selectedVersion}/${selectedBookAbbrevPt}/${chapterNumber}`;
+                if (versesRange && versesRange.match(/^\d+$/)) {
+                    apiUrl += `/${versesRange}`;
                 }
-            } catch (error) {
-                bibleVerseDisplayArea.innerHTML = `<p class="text-red-500">Ocorreu um erro ao buscar o versículo. Verifique sua conexão ou tente novamente mais tarde.</p>`;
-                showNotification("Erro na conexão com a API da Bíblia.", 'error');
-                console.error("Erro na chamada da API da Bíblia:", error);
-            } finally {
-                bibleVerseLoadingIndicator.classList.add('hidden');
+                const response = await fetch(apiUrl, {
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    let formattedOutput = `<h4 class=\"text-lg font-bold text-gray-800 mb-2\">${selectedBookAbbrevPt.toUpperCase()} ${chapterNumber}${versesRange ? (':' + versesRange) : ''} (${selectedVersion.toUpperCase()} - API)</h4>`;
+                    if (Array.isArray(data.verses)) {
+                        data.verses.forEach(verse => {
+                            formattedOutput += `<p class=\"mb-1\"><span class=\"font-semibold\">${verse.number}.</span> ${verse.text}</p>`;
+                        });
+                    } else if (data.text) {
+                        formattedOutput += `<p class=\"mb-1\"><span class=\"font-semibold\">${data.number}.</span> ${data.text}</p>`;
+                    } else {
+                        throw new Error('Formato inesperado da resposta da API');
+                    }
+                    bibleVerseDisplayArea.innerHTML = formattedOutput;
+                    showNotification("Versículo(s) encontrado(s) via API!", 'success');
+                    found = true;
+                }
+            } catch (e) {
+                // Se falhar, tenta Gemini
+                found = false;
             }
+
+            if (!found) {
+                try {
+                    // Busca via Gemini
+                    let prompt = `Me forneça o texto bíblico do livro '${selectedBookAbbrevPt}', capítulo ${chapterNumber}`;
+                    if (versesRange) {
+                        prompt += `, versículo(s) ${versesRange}`;
+                    }
+                    prompt += `, na versão ${selectedVersion.toUpperCase()}. Responda apenas com o texto bíblico, sem comentários, sem explicações, sem introdução, sem formatação Markdown. Apenas o texto puro, separando os versículos por linha.`;
+
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+                    const response = await fetch(geminiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        let formattedOutput = `<h4 class=\"text-lg font-bold text-gray-800 mb-2\">${selectedBookAbbrevPt.toUpperCase()} ${chapterNumber}${versesRange ? (':' + versesRange) : ''} (${selectedVersion.toUpperCase()} - Gemini)</h4>`;
+                        formattedOutput += `<pre class=\"whitespace-pre-wrap\">${text}</pre>`;
+                        bibleVerseDisplayArea.innerHTML = formattedOutput;
+                        showNotification("Versículo(s) gerado(s) pela IA Gemini!", 'success');
+                    } else {
+                        bibleVerseDisplayArea.innerHTML = `<p class=\"text-red-500\">Não foi possível obter o texto bíblico via Gemini. Tente novamente.</p>`;
+                        showNotification("Erro ao buscar via Gemini.", 'error');
+                    }
+                } catch (e) {
+                    bibleVerseDisplayArea.innerHTML = `<p class=\"text-red-500\">Erro ao buscar via Gemini. Verifique sua conexão ou tente novamente.</p>`;
+                    showNotification("Erro ao buscar via Gemini.", 'error');
+                }
+            }
+            bibleVerseLoadingIndicator.classList.add('hidden');
         };
 
         // Função para buscar versículos da Bíblia por palavra-chave
@@ -572,13 +597,37 @@
                 link.setAttribute('rel', 'noopener noreferrer');
                 link.setAttribute('target', '_blank');
             });
+
+            // Popula os dropdowns de livros e versões da Bíblia
             populateBibleBooksDropdown();
             populateBibleVersionsDropdown();
 
+            // Corrige seleção inicial dos dropdowns
+            const bookSelect = document.getElementById('bible-book-select');
+            const versionSelect = document.getElementById('bible-version-select');
+            if (bookSelect && !bookSelect.value) bookSelect.value = 'gn';
+            if (versionSelect && !versionSelect.value) versionSelect.value = 'nvi';
+
+            // Garante que o capítulo inicial seja 1
+            const chapterInput = document.getElementById('bible-chapter-input');
+            if (chapterInput && !chapterInput.value) chapterInput.value = '1';
+
+            // Adiciona eventos
             document.getElementById('generate-bible-study-button')?.addEventListener('click', generateBibleStudy);
             document.getElementById('fetch-bible-verse-button')?.addEventListener('click', fetchBibleVerse);
             document.getElementById('search-bible-button')?.addEventListener('click', searchBibleVerses);
             document.getElementById('generate-prayer-button')?.addEventListener('click', generatePrayer);
+
+            // Atualiza capítulos disponíveis ao trocar de livro
+            if (bookSelect) {
+                bookSelect.addEventListener('change', function() {
+                    const selectedBook = bibleBooks.find(b => b.abbrev.pt === bookSelect.value);
+                    if (selectedBook && chapterInput) {
+                        chapterInput.value = '1';
+                        chapterInput.max = selectedBook.chapters;
+                    }
+                });
+            }
 
             // Acessibilidade: foco automático em modais e ESC para fechar modais
             document.body.addEventListener('keydown', function (e) {
