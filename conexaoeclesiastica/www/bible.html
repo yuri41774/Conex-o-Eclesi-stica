@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conexão Eclesiástica - Bíblia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            background: linear-gradient(to bottom right, #e0f2f7, #b2ebf2); /* Cores mais claras para a bíblia */
+            padding: 1rem;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #6366f1;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hidden { display: none; }
+        .notification-transition { transition: opacity 0.5s ease-in-out; }
+        #notification-bar {
+            position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 400px; background-color: #4CAF50;
+            color: white; text-align: center; padding: 0.75rem;
+            border-bottom-left-radius: 0.5rem; border-bottom-right-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); z-index: 1000;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-green-100 to-teal-200 p-4">
+
+    <div id="notification-bar" class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-green-500 text-white text-center py-3 rounded-b-lg shadow-lg z-50 opacity-0 notification-transition hidden text-sm sm:text-base">
+    </div>
+
+    <div class="w-full max-w-4xl bg-white rounded-xl shadow-2xl p-2 sm:p-4 md:p-8 text-center relative overflow-x-hidden">
+        <h2 class="text-2xl sm:text-3xl font-bold text-center text-teal-700 mb-4 sm:mb-6">Central Bíblica 📖✨</h2>
+        <p class="text-gray-700 mb-4 sm:mb-8 text-base sm:text-lg">Explore as escrituras e ferramentas de estudo.</p>
+
+        <div class="mt-4 sm:mt-8 bg-green-50 p-3 sm:p-6 rounded-lg shadow-inner">
+            <h3 class="text-xl sm:text-2xl font-bold text-green-700 mb-2 sm:mb-4">Estudo Bíblico Inteligente</h3>
+            <div class="flex flex-col md:flex-row gap-2 sm:gap-4 mb-2 sm:mb-4">
+                <textarea
+                    id="bible-question-input"
+                    placeholder="Pergunte sobre um versículo, tema ou conceito bíblico (ex: 'Explique João 3:16', 'O que é a Graça de Deus?')"
+                    rows="4"
+                    class="flex-grow p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 resize-y text-sm sm:text-base w-full"
+                ></textarea>
+                <button
+                    id="generate-bible-study-button"
+                    class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition duration-300 ease-in-out shadow-md w-full md:w-auto text-sm sm:text-base"
+                >
+                    Gerar Estudo
+                </button>
+            </div>
+            <div id="bible-loading-indicator" class="hidden flex justify-center items-center py-4">
+                <div class="spinner"></div>
+                <p class="ml-2 text-gray-600">Gerando resposta...</p>
+            </div>
+            <div id="bible-response-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800">
+                <p class="text-gray-500 italic">Sua resposta será exibida aqui.</p>
+            </div>
+        </div>
+
+        <div class="mt-4 sm:mt-8 bg-purple-100 p-3 sm:p-6 rounded-lg shadow-inner">
+            <h3 class="text-xl sm:text-2xl font-bold text-purple-700 mb-2 sm:mb-4">Gerador de Orações Personalizadas</h3>
+            <div class="flex flex-col md:flex-row gap-2 sm:gap-4 mb-2 sm:mb-4">
+                <textarea
+                    id="prayer-topic-input"
+                    placeholder="Descreva o tema da sua oração (ex: 'gratidão pela família', 'força em tempos difíceis', 'sabedoria para decisões')"
+                    rows="4"
+                    class="flex-grow p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-700 resize-y text-sm sm:text-base w-full"
+                ></textarea>
+                <button
+                    id="generate-prayer-button"
+                    class="bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-800 transition duration-300 ease-in-out shadow-md w-full md:w-auto text-sm sm:text-base"
+                >
+                    Gerar Oração
+                </button>
+            </div>
+            <div id="prayer-loading-indicator" class="hidden flex justify-center items-center py-4">
+                <div class="spinner"></div>
+                <p class="ml-2 text-gray-600">Gerando oração...</p>
+            </div>
+            <div id="prayer-response-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800">
+                <p class="text-gray-500 italic">Sua oração personalizada será exibida aqui.</p>
+            </div>
+        </div>
+
+        <div class="mt-4 sm:mt-8 bg-yellow-50 p-3 sm:p-6 rounded-lg shadow-inner">
+            <h3 class="text-xl sm:text-2xl font-bold text-yellow-700 mb-2 sm:mb-4">Leitura Bíblica</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-4 mb-2 sm:mb-4">
+                <div>
+                    <label for="bible-book-select" class="block text-gray-700 text-sm font-bold mb-2 text-left">Livro:</label>
+                    <select id="bible-book-select" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500">
+                        </select>
+                </div>
+                <div>
+                    <label for="bible-version-select" class="block text-gray-700 text-sm font-bold mb-2 text-left">Versão:</label>
+                    <select id="bible-version-select" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500">
+                        </select>
+                </div>
+                <div>
+                    <label for="bible-chapter-input" class="block text-gray-700 text-sm font-bold mb-2 text-left">Capítulo:</label>
+                <input type="number" id="bible-chapter-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500 text-sm sm:text-base" placeholder="23" value="1">
+                </div>
+                <div>
+                    <label for="bible-verses-input" class="block text-gray-700 text-sm font-bold mb-2 text-left">Versículos (opcional, ex: 1-3 ou 5):</label>
+                <input type="text" id="bible-verses-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500 text-sm sm:text-base" placeholder="1-6">
+                </div>
+            </div>
+            <button
+                id="fetch-bible-verse-button"
+                class="bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-700 transition duration-300 ease-in-out shadow-md w-full md:w-auto text-sm sm:text-base"
+            >
+                Buscar Versículo(s)
+            </button>
+            <div id="bible-verse-loading-indicator" class="hidden flex justify-center items-center py-4">
+                <div class="spinner"></div>
+                <p class="ml-2 text-gray-600">Buscando versículo(s)...</p>
+            </div>
+            <div id="bible-verse-display-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800 mt-4">
+                <p class="text-gray-500 italic">O versículo ou passagem bíblica aparecerá aqui.</p>
+            </div>
+        </div>
+
+        <div class="mt-4 sm:mt-8 bg-red-50 p-3 sm:p-6 rounded-lg shadow-inner">
+            <h3 class="text-xl sm:text-2xl font-bold text-red-700 mb-2 sm:mb-4">Buscar na Bíblia por Palavra-chave</h3>
+            <div class="flex flex-col md:flex-row gap-2 sm:gap-4 mb-2 sm:mb-4">
+                <input
+                    type="text"
+                    id="bible-search-input"
+                    placeholder="Digite uma palavra ou frase para buscar (ex: 'amor', 'fé', 'salvação')"
+                    class="flex-grow p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base w-full"
+                />
+                <button
+                    id="search-bible-button"
+                    class="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition duration-300 ease-in-out shadow-md w-full md:w-auto text-sm sm:text-base"
+                >
+                    Buscar
+                </button>
+            </div>
+            <div id="bible-search-loading-indicator" class="hidden flex justify-center items-center py-4">
+                <div class="spinner"></div>
+                <p class="ml-2 text-gray-600">Buscando...</p>
+            </div>
+            <div id="bible-search-results-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800">
+                <p class="text-gray-500 italic">Os resultados da busca aparecerão aqui.</p>
+            </div>
+        </div>
+
+        <a href="index.html" class="mt-4 sm:mt-8 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg inline-block w-full sm:w-auto text-sm sm:text-base">Voltar para o Início</a>
+    </div>
+
+    <script type="module">
+        // --- SEGURANÇA: Função para sanitizar entradas (básico contra XSS) ---
+        function sanitizeInput(str) {
+            if (typeof str !== 'string') return '';
+            return str.replace(/[&<>"'/]/g, function (c) {
+                return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;','/':'&#x2F;'}[c]);
+            });
+        }
+        // Importa os módulos necessários do Firebase (se necessário para a Bíblia no futuro)
+        // import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+        // import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
+
+        // Lista de livros da Bíblia
+        const bibleBooks = [
+            { abbrev: { pt: "gn", en: "gn" }, name: "Gênesis", author: "Moisés", chapters: 50, group: "Pentateuco", testament: "VT" },
+            { abbrev: { pt: "ex", en: "ex" }, name: "Êxodo", author: "Moisés", chapters: 40, group: "Pentateuco", testament: "VT" },
+            { abbrev: { pt: "lv", en: "lv" }, name: "Levítico", author: "Moisés", chapters: 27, group: "Pentateuco", testament: "VT" },
+            { abbrev: { pt: "nm", en: "nm" }, name: "Números", author: "Moisés", chapters: 36, group: "Pentateuco", testament: "VT" },
+            { abbrev: { pt: "dt", en: "dt" }, name: "Deuteronômio", author: "Moisés", chapters: 34, group: "Pentateuco", testament: "VT" },
+            { abbrev: { pt: "js", en: "js" }, name: "Josué", author: "Josué", chapters: 24, group: "Históricos", testament: "VT" },
+            { abbrev: { pt: "jz", en: "jd" }, name: "Juízes", author: "Samuel", chapters: 21, group: "Históricos", testament: "VT" },
+            { abbrev: { pt: "rt", en: "rt" }, name: "Rute", author: "Samuel", chapters: 4, group: "Históricos", testament: "VT" },
+            { abbrev: { pt: "1sm", en: "1sm" }, name: "1 Samuel", author: "Samuel", chapters: 31, group: "Históricos", testament: "VT" },
+            { abbrev: { pt: "2sm", en: "2sm" }, name: "2 Samuel", author: "Natã e Gade", chapters: 24, group: "Históricos", testament: "VT" },
+            { abbrev: { pt: "1rs", en: "1ki" }, name: "1 Reis", author: "Jeremias", chapters: 22, group: "Históricos", testament: "VT" },
+            { abbrev: { pt: "2rs", en: "2ki" }, name: "2 Reis", author: "Jeremias", chapters: 25, group: "Históricos", testament: "VT" },
+            { abbrev: { pt: "1cr", en: "1ch" }, name: "1 Crônicas", author: "Esdras", chapters: 29, group: "Históricos", testament: "VT" },
+            { abbrev: { pt: "2cr", en: "2ch" }, name: "2 Crônicas", author: "Esdras", chapters: 36, group: "Históricos", testament: "VT" },
+            { abbrev: { pt: "ed", en: "ezr" }, name: "Esdras", author: "Esdras", chapters: 10, group: "Históricos", testament: "VT" },
+            { abbrev: { pt: "ne", en: "ne" }, name: "Neemias", author: "Neemias", chapters: 13, group: "Históricos", testament: "VT" },
+            { abbrev: { pt: "et", en: "et" }, name: "Ester", author: "Desconhecido", chapters: 10, group: "Históricos", testament: "VT" },
+            { abbrev: { pt: "jo", en: "job" }, name: "Jó", author: "Desconhecido", chapters: 42, group: "Poéticos", testament: "VT" },
+            { abbrev: { pt: "sl", en: "ps" }, name: "Salmos", author: "David, Moisés, Salomão", chapters: 150, group: "Poéticos", testament: "VT" },
+            { abbrev: { pt: "pv", en: "pr" }, name: "Provérbios", author: "Salomão", chapters: 31, group: "Poéticos", testament: "VT" },
+            { abbrev: { pt: "ec", en: "ec" }, name: "Eclesiastes", author: "Salomão", chapters: 12, group: "Poéticos", testament: "VT" },
+            { abbrev: { pt: "ct", en: "so" }, name: "Cantares de Salomão", author: "Salomão", chapters: 8, group: "Poéticos", testament: "VT" },
+            { abbrev: { pt: "is", en: "is" }, name: "Isaías", author: "Isaías", chapters: 66, group: "Profetas Maiores", testament: "VT" },
+            { abbrev: { pt: "jr", en: "jr" }, name: "Jeremias", chapters: 52, group: "Profetas Maiores", testament: "VT" },
+            { abbrev: { pt: "lm", en: "la" }, name: "Lamentações de Jeremias", author: "Jeremias", chapters: 5, group: "Profetas Maiores", testament: "VT" },
+            { abbrev: { pt: "ez", en: "ez" }, name: "Ezequiel", author: "Ezequiel", chapters: 48, group: "Profetas Maiores", testament: "VT" },
+            { abbrev: { pt: "dn", en: "dn" }, name: "Daniel", author: "Daniel", chapters: 12, group: "Profetas Maiores", testament: "VT" },
+            { abbrev: { pt: "os", en: "ho" }, name: "Oséias", author: "Oséias", chapters: 14, group: "Profetas Menores", testament: "VT" },
+            { abbrev: { pt: "jl", en: "jl" }, name: "Joel", author: "Joel", chapters: 3, group: "Profetas Menores", testament: "VT" },
+            { abbrev: { pt: "am", en: "am" }, name: "Amós", author: "Amós", chapters: 9, group: "Profetas Menores", testament: "VT" },
+            { abbrev: { pt: "ob", en: "ob" }, name: "Obadias", author: "Obadias", chapters: 1, group: "Profetas Menores", testament: "VT" },
+            { abbrev: { pt: "jn", en: "jo" }, name: "Jonas", author: "Jonas", chapters: 4, group: "Profetas Menores", testament: "VT" },
+            { abbrev: { pt: "mq", en: "mi" }, name: "Miquéias", author: "Miquéias", chapters: 7, group: "Profetas Menores", testament: "VT" },
+            { abbrev: { pt: "na", en: "na" }, name: "Naum", author: "Naum", chapters: 3, group: "Profetas Menores", testament: "VT" },
+            { abbrev: { pt: "hc", en: "hb" }, name: "Habacuque", author: "Habacuque", chapters: 3, group: "Profetas Menores", testament: "VT" },
+            { abbrev: { pt: "sf", en: "zp" }, name: "Sofonias", author: "Sofonias", chapters: 3, group: "Profetas Menores", testament: "VT" },
+            { abbrev: { pt: "ag", en: "hg" }, name: "Ageu", author: "Ageu", chapters: 2, group: "Profetas Menores", testament: "VT" },
+            { abbrev: { pt: "zc", en: "zc" }, name: "Zacarias", author: "Zacarias", chapters: 14, group: "Profetas Menores", testament: "VT" },
+            { abbrev: { pt: "ml", en: "ml" }, name: "Malaquias", author: "Malaquias", chapters: 4, group: "Profetas Menores", testament: "VT" },
+            { abbrev: { pt: "mt", en: "mt" }, name: "Mateus", author: "Mateus", chapters: 28, group: "Evangelhos", testament: "NT" },
+            { abbrev: { pt: "mc", en: "mk" }, name: "Marcos", author: "Marcos", chapters: 16, group: "Evangelhos", testament: "NT" },
+            { abbrev: { pt: "lc", en: "lk" }, name: "Lucas", author: "Lucas", chapters: 24, group: "Evangelhos", testament: "NT" },
+            { abbrev: { pt: "jo", en: "jn" }, name: "João", author: "João", chapters: 21, group: "Evangelhos", testament: "NT" },
+            { abbrev: { pt: "at", en: "act" }, name: "Atos dos Apóstolos", author: "Lucas", chapters: 28, group: "Históricos", testament: "NT" },
+            { abbrev: { pt: "rm", en: "rm" }, name: "Romanos", author: "Paulo", chapters: 16, group: "Cartas Paulinas", testament: "NT" },
+            { abbrev: { pt: "1co", en: "1co" }, name: "1 Coríntios", author: "Paulo", chapters: 16, group: "Cartas Paulinas", testament: "NT" },
+            { abbrev: { pt: "2co", en: "2co" }, name: "2 Coríntios", author: "Paulo", chapters: 13, group: "Cartas Paulinas", testament: "NT" },
+            { abbrev: { pt: "gl", en: "gl" }, name: "Gálatas", author: "Paulo", chapters: 6, group: "Cartas Paulinas", testament: "NT" },
+            { abbrev: { pt: "ef", en: "ep" }, name: "Efésios", author: "Paulo", chapters: 6, group: "Cartas Paulinas", testament: "NT" },
+            { abbrev: { pt: "fp", en: "ph" }, name: "Filipenses", author: "Paulo", chapters: 4, group: "Cartas Paulinas", testament: "NT" },
+            { abbrev: { pt: "cl", en: "cl" }, name: "Colossenses", author: "Paulo", chapters: 4, group: "Cartas Paulinas", testament: "NT" },
+            { abbrev: { pt: "1ts", en: "1th" }, name: "1 Tessalonicenses", author: "Paulo", chapters: 5, group: "Cartas Paulinas", testament: "NT" },
+            { abbrev: { pt: "2ts", en: "2th" }, name: "2 Tessalonicenses", author: "Paulo", chapters: 3, group: "Cartas Paulinas", testament: "NT" },
+            { abbrev: { pt: "1tm", en: "1tm" }, name: "1 Timóteo", author: "Paulo", chapters: 6, group: "Cartas Paulinas", testament: "NT" },
+            { abbrev: { pt: "2tm", en: "2tm" }, name: "2 Timóteo", author: "Paulo", chapters: 4, group: "Cartas Paulinas", testament: "NT" },
+            { abbrev: { pt: "tt", en: "tt" }, name: "Tito", author: "Paulo", chapters: 3, group: "Cartas Paulinas", testament: "NT" },
+            { abbrev: { pt: "fm", en: "phm" }, name: "Filemom", author: "Paulo", chapters: 1, group: "Cartas Paulinas", testament: "NT" },
+            { abbrev: { pt: "hb", en: "heb" }, name: "Hebreus", author: "Desconhecido", chapters: 13, group: "Cartas Gerais", testament: "NT" },
+            { abbrev: { pt: "tg", en: "jas" }, name: "Tiago", author: "Tiago", chapters: 5, group: "Cartas Gerais", testament: "NT" },
+            { abbrev: { pt: "1pe", en: "1pe" }, name: "1 Pedro", author: "Pedro", chapters: 5, group: "Cartas Gerais", testament: "NT" },
+            { abbrev: { pt: "2pe", en: "2pe" }, name: "2 Pedro", author: "Pedro", chapters: 3, group: "Cartas Gerais", testament: "NT" },
+            { abbrev: { pt: "1jo", en: "1jn" }, name: "1 João", author: "João", chapters: 5, group: "Cartas Gerais", testament: "NT" },
+            { abbrev: { pt: "2jo", en: "2jn" }, name: "2 João", author: "João", chapters: 1, group: "Cartas Gerais", testament: "NT" },
+            { abbrev: { pt: "3jo", en: "3jn" }, name: "3 João", author: "João", chapters: 1, group: "Cartas Gerais", testament: "NT" },
+            { abbrev: { pt: "jd", en: "jud" }, name: "Judas", author: "Judas", chapters: 1, group: "Cartas Gerais", testament: "NT" },
+            { abbrev: { pt: "ap", en: "re" }, name: "Apocalipse", author: "João", chapters: 22, group: "Profético", testament: "NT" }
+        ];
+
+        // Lista de versões da Bíblia
+        const bibleVersions = [
+            { version: "acf", verses: 31106 },
+            { version: "apee", verses: 30975 },
+            { version: "bbe", verses: 31104 },
+            { version: "nvi", verses: 31103 }
+        ];
+
+        const showNotification = (message, type = 'success') => {
+            const notificationBar = document.getElementById('notification-bar');
+            if (!notificationBar) return;
+
+            notificationBar.textContent = message;
+            notificationBar.classList.remove('hidden', 'bg-red-500', 'bg-green-500', 'bg-gray-700');
+
+            if (type === 'success') {
+                notificationBar.classList.add('bg-green-500');
+            } else if (type === 'error') {
+                notificationBar.classList.add('bg-red-500');
+            } else {
+                notificationBar.classList.add('bg-gray-700');
+            }
+
+            notificationBar.classList.remove('opacity-0');
+            notificationBar.classList.add('opacity-100');
+
+            setTimeout(() => {
+                notificationBar.classList.remove('opacity-100');
+                notificationBar.classList.add('opacity-0');
+                setTimeout(() => {
+                    notificationBar.classList.add('hidden');
+                }, 500);
+            }, 3000);
+        };
+
+        // Função para chamar a API Gemini para estudo bíblico
+        const GEMINI_API_KEY = "AIzaSyAXSNFBenSCk7wWscAafWILt45vok8cnMU"; // Sua chave de API do Gemini
+        const generateBibleStudy = async () => {
+            const bibleQuestionInput = document.getElementById('bible-question-input');
+            const bibleResponseArea = document.getElementById('bible-response-area');
+            const bibleLoadingIndicator = document.getElementById('bible-loading-indicator');
+            let question = bibleQuestionInput.value.trim();
+            question = sanitizeInput(question);
+
+            if (!question) {
+                showNotification("Por favor, digite sua pergunta sobre a Bíblia.", 'error');
+                return;
+            }
+
+            bibleResponseArea.textContent = '';
+            if (bibleLoadingIndicator) bibleLoadingIndicator.classList.remove('hidden');
+
+            try {
+                const prompt = `Explique o seguinte conceito ou versículo bíblico de forma clara e concisa, baseando-se em conhecimento bíblico: "${question}".`;
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    if (bibleResponseArea) bibleResponseArea.textContent = text;
+                    showNotification("Estudo bíblico gerado!", 'success');
+                } else {
+                    if (bibleResponseArea) bibleResponseArea.textContent = "Não foi possível gerar uma resposta. Tente novamente.";
+                    showNotification("Erro ao gerar estudo bíblico.", 'error');
+                    console.error("Estrutura de resposta da API Gemini inesperada:", result);
+                }
+            } catch (error) {
+                if (bibleResponseArea) bibleResponseArea.textContent = "Ocorreu um erro ao conectar com a IA. Tente novamente mais tarde.";
+                showNotification("Erro na conexão com a IA.", 'error');
+                console.error("Erro na chamada da API Gemini:", error);
+            } finally {
+                if (bibleLoadingIndicator) bibleLoadingIndicator.classList.add('hidden');
+            }
+        };
+
+        // Função para buscar versículos bíblicos usando a API da Bíblia Digital
+        const fetchBibleVerse = async () => {
+            const bookSelect = document.getElementById('bible-book-select');
+            const versionSelect = document.getElementById('bible-version-select');
+            const chapterInput = document.getElementById('bible-chapter-input');
+            const versesInput = document.getElementById('bible-verses-input');
+            const bibleVerseDisplayArea = document.getElementById('bible-verse-display-area');
+            const bibleVerseLoadingIndicator = document.getElementById('bible-verse-loading-indicator');
+
+            if (!bookSelect || !versionSelect || !chapterInput || !versesInput || !bibleVerseDisplayArea || !bibleVerseLoadingIndicator) return;
+
+            const selectedBookAbbrevPt = sanitizeInput(bookSelect.value.trim());
+            const selectedVersion = sanitizeInput(versionSelect.value.trim());
+            const chapterNumber = sanitizeInput(chapterInput.value.trim());
+            const versesRange = sanitizeInput(versesInput.value.trim());
+
+            if (!selectedBookAbbrevPt || !chapterNumber || !selectedVersion) {
+                showNotification("Por favor, selecione um livro, uma versão e insira o capítulo.", 'error');
+                return;
+            }
+
+            bibleVerseDisplayArea.innerHTML = '';
+            bibleVerseLoadingIndicator.classList.remove('hidden');
+
+            // 1. Tenta buscar na API pública (abibliadigital.com.br)
+            let found = false;
+            try {
+                let apiUrl = `https://www.abibliadigital.com.br/api/verses/${selectedVersion}/${selectedBookAbbrevPt}/${chapterNumber}`;
+                if (versesRange && versesRange.match(/^\d+$/)) {
+                    apiUrl += `/${versesRange}`;
+                }
+                const response = await fetch(apiUrl, {
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    let formattedOutput = `<h4 class=\"text-lg font-bold text-gray-800 mb-2\">${selectedBookAbbrevPt.toUpperCase()} ${chapterNumber}${versesRange ? (':' + versesRange) : ''} (${selectedVersion.toUpperCase()} - API)</h4>`;
+                    if (Array.isArray(data.verses)) {
+                        data.verses.forEach(verse => {
+                            formattedOutput += `<p class=\"mb-1\"><span class=\"font-semibold\">${verse.number}.</span> ${verse.text}</p>`;
+                        });
+                    } else if (data.text) {
+                        formattedOutput += `<p class=\"mb-1\"><span class=\"font-semibold\">${data.number}.</span> ${data.text}</p>`;
+                    } else {
+                        throw new Error('Formato inesperado da resposta da API');
+                    }
+                    bibleVerseDisplayArea.innerHTML = formattedOutput;
+                    showNotification("Versículo(s) encontrado(s) via API!", 'success');
+                    found = true;
+                }
+            } catch (e) {
+                // Se falhar, tenta Gemini
+                found = false;
+            }
+
+            if (!found) {
+                try {
+                    // Busca via Gemini
+                    let prompt = `Me forneça o texto bíblico do livro '${selectedBookAbbrevPt}', capítulo ${chapterNumber}`;
+                    if (versesRange) {
+                        prompt += `, versículo(s) ${versesRange}`;
+                    }
+                    prompt += `, na versão ${selectedVersion.toUpperCase()}. Responda apenas com o texto bíblico, sem comentários, sem explicações, sem introdução, sem formatação Markdown. Apenas o texto puro, separando os versículos por linha.`;
+
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+                    const response = await fetch(geminiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        let formattedOutput = `<h4 class=\"text-lg font-bold text-gray-800 mb-2\">${selectedBookAbbrevPt.toUpperCase()} ${chapterNumber}${versesRange ? (':' + versesRange) : ''} (${selectedVersion.toUpperCase()} - Gemini)</h4>`;
+                        formattedOutput += `<pre class=\"whitespace-pre-wrap\">${text}</pre>`;
+                        bibleVerseDisplayArea.innerHTML = formattedOutput;
+                        showNotification("Versículo(s) gerado(s) pela IA Gemini!", 'success');
+                    } else {
+                        bibleVerseDisplayArea.innerHTML = `<p class=\"text-red-500\">Não foi possível obter o texto bíblico via Gemini. Tente novamente.</p>`;
+                        showNotification("Erro ao buscar via Gemini.", 'error');
+                    }
+                } catch (e) {
+                    bibleVerseDisplayArea.innerHTML = `<p class=\"text-red-500\">Erro ao buscar via Gemini. Verifique sua conexão ou tente novamente.</p>`;
+                    showNotification("Erro ao buscar via Gemini.", 'error');
+                }
+            }
+            bibleVerseLoadingIndicator.classList.add('hidden');
+        };
+
+        // Função para buscar versículos da Bíblia por palavra-chave
+        const searchBibleVerses = async () => {
+            const searchInput = document.getElementById('bible-search-input');
+            const versionSelect = document.getElementById('bible-version-select');
+            const searchResultsArea = document.getElementById('bible-search-results-area');
+            const searchLoadingIndicator = document.getElementById('bible-search-loading-indicator');
+
+            if (!searchInput || !versionSelect || !searchResultsArea || !searchLoadingIndicator) return;
+
+            const searchTerm = sanitizeInput(searchInput.value.trim());
+            const selectedVersion = sanitizeInput(versionSelect.value);
+
+            if (!searchTerm || !selectedVersion) {
+                showNotification("Por favor, digite uma palavra-chave e selecione uma versão.", 'error');
+                return;
+            }
+
+            searchResultsArea.innerHTML = '';
+            searchLoadingIndicator.classList.remove('hidden');
+
+            const apiUrl = `https://www.abibliadigital.com.br/api/verses/search`;
+            const payload = {
+                version: selectedVersion,
+                search: searchTerm
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.verses && data.verses.length > 0) {
+                    let formattedOutput = `
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Resultados da Busca para "${searchTerm}" (${data.occurrence} ocorrências na versão ${data.version})</h4>
+                    `;
+                    data.verses.forEach(verse => {
+                        formattedOutput += `
+                            <p class="mb-1">
+                                <span class="font-semibold">${verse.book.name} ${verse.chapter}:${verse.number}.</span> ${verse.text}
+                            </p>
+                        `;
+                    });
+                    searchResultsArea.innerHTML = formattedOutput;
+                    showNotification(`${data.occurrence} versículo(s) encontrado(s)!`, 'success');
+                } else {
+                    searchResultsArea.innerHTML = `<p class="text-red-500">Nenhum versículo encontrado para "${searchTerm}" na versão selecionada.</p>`;
+                    showNotification("Nenhum resultado encontrado.", 'info');
+                    console.warn("Nenhum resultado ou erro na busca da API da Bíblia:", data);
+                }
+            } catch (error) {
+                searchResultsArea.innerHTML = `<p class="text-red-500">Ocorreu um erro ao buscar versículos. Verifique sua conexão ou tente novamente mais tarde.</p>`;
+                showNotification("Erro na conexão com a API de Busca da Bíblia.", 'error');
+                console.error("Erro na chamada da API de Busca da Bíblia:", error);
+            } finally {
+                searchLoadingIndicator.classList.add('hidden');
+            }
+        };
+
+        // Função para popular o dropdown de livros da Bíblia
+        const populateBibleBooksDropdown = () => {
+            const bookSelect = document.getElementById('bible-book-select');
+            if (bookSelect) {
+                bookSelect.innerHTML = ''; // Limpa opções existentes
+                let defaultOption = document.createElement('option');
+                defaultOption.value = "";
+                defaultOption.textContent = "Selecione um livro";
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                bookSelect.appendChild(defaultOption);
+
+                bibleBooks.forEach(book => {
+                    let option = document.createElement('option');
+                    option.value = book.abbrev.pt;
+                    option.textContent = book.name;
+                    bookSelect.appendChild(option);
+                });
+                bookSelect.value = "gn";
+                document.getElementById('bible-chapter-input').value = "1";
+            }
+        };
+
+        // Função para popular o dropdown de versões da Bíblia
+        const populateBibleVersionsDropdown = () => {
+            const versionSelect = document.getElementById('bible-version-select');
+            if (versionSelect) {
+                versionSelect.innerHTML = ''; // Limpa opções existentes
+                let defaultOption = document.createElement('option');
+                defaultOption.value = "";
+                defaultOption.textContent = "Selecione uma versão";
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                versionSelect.appendChild(defaultOption);
+
+                bibleVersions.forEach(version => {
+                    let option = document.createElement('option');
+                    option.value = version.version;
+                    option.textContent = version.version.toUpperCase();
+                    versionSelect.appendChild(option);
+                });
+                versionSelect.value = "nvi";
+            }
+        };
+
+        // Função para gerar uma oração personalizada usando a API Gemini
+        const generatePrayer = async () => {
+            const prayerTopicInput = document.getElementById('prayer-topic-input');
+            const prayerResponseArea = document.getElementById('prayer-response-area');
+            const prayerLoadingIndicator = document.getElementById('prayer-loading-indicator');
+            let topic = prayerTopicInput.value.trim();
+            topic = sanitizeInput(topic);
+
+            if (!topic) {
+                showNotification("Por favor, descreva o tema da sua oração.", 'error');
+                return;
+            }
+
+            if (!prayerResponseArea || !prayerLoadingIndicator) return;
+
+            prayerResponseArea.textContent = '';
+            prayerLoadingIndicator.classList.remove('hidden');
+
+            try {
+                const prompt = `Gere uma oração inspiradora e relevante sobre o seguinte tema: "${topic}". Mantenha a oração com cerca de 50-100 palavras.`;
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    prayerResponseArea.textContent = text;
+                    showNotification("Oração gerada com sucesso!", 'success');
+                } else {
+                    prayerResponseArea.textContent = "Não foi possível gerar a oração. Tente novamente.";
+                    showNotification("Erro ao gerar oração.", 'error');
+                    console.error("Estrutura de resposta da API Gemini inesperada para oração:", result);
+                }
+            } catch (error) {
+                prayerResponseArea.textContent = "Ocorreu um erro ao conectar com a IA para gerar a oração. Tente novamente mais tarde.";
+                showNotification("Erro na conexão com a IA para oração.", 'error');
+                console.error("Erro na chamada da API Gemini para oração:", error);
+            } finally {
+                prayerLoadingIndicator.classList.add('hidden');
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Segurança: Força todos os links externos a terem rel="noopener noreferrer" e target="_blank"
+            document.querySelectorAll('a[href^="http"]').forEach(link => {
+                link.setAttribute('rel', 'noopener noreferrer');
+                link.setAttribute('target', '_blank');
+            });
+
+            // Popula os dropdowns de livros e versões da Bíblia
+            populateBibleBooksDropdown();
+            populateBibleVersionsDropdown();
+
+            // Corrige seleção inicial dos dropdowns
+            const bookSelect = document.getElementById('bible-book-select');
+            const versionSelect = document.getElementById('bible-version-select');
+            if (bookSelect && !bookSelect.value) bookSelect.value = 'gn';
+            if (versionSelect && !versionSelect.value) versionSelect.value = 'nvi';
+
+            // Garante que o capítulo inicial seja 1
+            const chapterInput = document.getElementById('bible-chapter-input');
+            if (chapterInput && !chapterInput.value) chapterInput.value = '1';
+
+            // Adiciona eventos
+            document.getElementById('generate-bible-study-button')?.addEventListener('click', generateBibleStudy);
+            document.getElementById('fetch-bible-verse-button')?.addEventListener('click', fetchBibleVerse);
+            document.getElementById('search-bible-button')?.addEventListener('click', searchBibleVerses);
+            document.getElementById('generate-prayer-button')?.addEventListener('click', generatePrayer);
+
+            // Atualiza capítulos disponíveis ao trocar de livro
+            if (bookSelect) {
+                bookSelect.addEventListener('change', function() {
+                    const selectedBook = bibleBooks.find(b => b.abbrev.pt === bookSelect.value);
+                    if (selectedBook && chapterInput) {
+                        chapterInput.value = '1';
+                        chapterInput.max = selectedBook.chapters;
+                    }
+                });
+            }
+
+            // Acessibilidade: foco automático em modais e ESC para fechar modais
+            document.body.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    const modais = document.querySelectorAll('[role="dialog"]');
+                    modais.forEach(modal => {
+                        if (!modal.classList.contains('hidden')) {
+                            modal.classList.add('hidden');
+                        }
+                    });
+                }
+            });
+
+            // Exemplo: foco automático em modais (caso sejam implementados)
+            const observer = new MutationObserver(() => {
+                const modal = document.querySelector('[role="dialog"]:not(.hidden)');
+                if (modal) {
+                    const focusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                    if (focusable) focusable.focus();
+                }
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+
+            // Usabilidade: desabilitar botões durante loading (exemplo para botões de gerar)
+            document.body.addEventListener('click', function (e) {
+                const btn = e.target.closest('button');
+                if (btn && (btn.id?.includes('generate') || btn.id?.includes('fetch') || btn.id?.includes('search'))) {
+                    btn.disabled = true;
+                    setTimeout(() => { btn.disabled = false; }, 2000); // Simula loading
+                }
+            });
+        });
+    </script>
+</body>
+</html>
