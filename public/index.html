@@ -3,61 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conexão Eclesiástica</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Conexão Eclesiástica - Início</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Firebase SDKs (serão importados no final do body) -->
     
-    <!-- Estilos Tailwind CSS para animações e utilitários -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            display: block; /* Garante que o body não interfere com posicionamento fixo */
+            display: block;
         }
         @keyframes fade-in-down {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         @keyframes fade-in-up {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in-down {
-            animation: fade-in-down 0.8s ease-out forwards;
-        }
-        .animate-fade-in-up {
-            animation: fade-in-up 0.8s ease-out forwards;
-            animation-delay: 0.2s;
-        }
-        .hidden {
-            display: none;
-        }
-        .notification-transition {
-            transition: opacity 0.5s ease-in-out;
-        }
-        /* Estilos para o modal */
-        .modal-overlay {
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-        }
-        /* Animação de carregamento (spinner) */
+        .animate-fade-in-down { animation: fade-in-down 0.8s ease-out forwards; }
+        .animate-fade-in-up { animation: fade-in-up 0.8s ease-out forwards; animation-delay: 0.2s; }
+        .hidden { display: none; }
+        .notification-transition { transition: opacity 0.5s ease-in-out; }
+        .modal-overlay { background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); }
         .spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #6366f1; /* Cor do spinner */
+            border-left-color: #6366f1;
             border-radius: 50%;
             width: 24px;
             height: 24px;
@@ -67,67 +37,39 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        /* Estilos para o menu hambúrguer */
         .hamburger-menu {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 256px; /* Largura do menu */
-            height: 100%;
-            background-color: #1f2937; /* bg-gray-800 */
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
-            z-index: 50; /* Acima de outros conteúdos */
-            box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
+            position: fixed; top: 0; right: 0; width: 256px; height: 100%;
+            background-color: #1f2937; transform: translateX(100%);
+            transition: transform 0.3s ease-in-out; z-index: 50;
+            box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2); padding: 1.5rem;
+            display: flex; flex-direction: column;
         }
-
-        .hamburger-menu.open {
-            transform: translateX(0);
-        }
-
+        .hamburger-menu.open { transform: translateX(0); }
         .hamburger-menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 40; /* Abaixo do menu, mas acima do conteúdo principal */
-            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); z-index: 40; display: none;
         }
-        .hamburger-menu-overlay.open {
-            display: block;
-        }
+        .hamburger-menu-overlay.open { display: block; }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 p-4 relative">
 
-    <!-- Mensagem de Carregamento -->
     <div id="loading-message" class="flex items-center justify-center min-h-screen bg-gray-100 absolute inset-0 z-10">
         <p class="text-xl text-gray-700">Carregando aplicação...</p>
     </div>
 
-    <!-- Barra de Notificações -->
     <div id="notification-bar" class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-green-500 text-white text-center py-3 rounded-b-lg shadow-lg z-50 opacity-0 notification-transition hidden">
-        <!-- Mensagens de notificação aparecerão aqui -->
-    </div>
+        </div>
 
-    <!-- Cabeçalho -->
     <header id="main-header" class="w-full max-w-4xl mx-auto bg-orange-600 text-white p-4 rounded-xl shadow-lg flex justify-between items-center mb-4 z-20 animate-fade-in-down hidden">
         <h1 class="text-3xl font-bold">Conexão Eclesiástica</h1>
         <div class="flex items-center space-x-4">
-            <!-- Perfil do Usuário no Cabeçalho -->
             <div id="user-profile-header" class="flex items-center space-x-2">
                 <img id="profile-avatar" class="w-10 h-10 rounded-full border-2 border-white hidden" src="https://placehold.co/40x40/cccccc/000000?text=👤" alt="Avatar do Usuário">
                 <span id="user-name-display" class="text-lg font-semibold">Visitante</span>
             </div>
             
-            <!-- Ícone do Menu Hambúrguer -->
-            <button id="hamburger-icon" class="flex flex-col justify-around w-8 h-8 bg-orange-700 p-1 rounded-md cursor-pointer" onclick="window.toggleHamburgerMenu()">
+            <button id="hamburger-icon" class="flex flex-col justify-around w-8 h-8 bg-orange-700 p-1 rounded-md cursor-pointer">
                 <span class="block h-0.5 bg-white rounded-full"></span>
                 <span class="block h-0.5 bg-white rounded-full"></span>
                 <span class="block h-0.5 bg-white rounded-full"></span>
@@ -135,11 +77,10 @@
         </div>
     </header>
 
-    <!-- Menu Hambúrguer (Off-canvas) -->
     <nav id="hamburger-menu" class="hamburger-menu">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-white">Menu</h2>
-            <button id="close-hamburger-menu" class="text-white hover:text-gray-300" onclick="window.toggleHamburgerMenu()">
+            <button id="close-hamburger-menu" class="text-white hover:text-gray-300">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -147,48 +88,42 @@
         </div>
         <ul class="flex flex-col space-y-4">
             <li>
-                <button id="menu-admin-button" class="w-full text-left bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-300" onclick="window.handleAdminClick(); window.toggleHamburgerMenu()">
+                <a href="admin.html" id="menu-admin-button" class="w-full text-left bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 block">
                     Administrador
-                </button>
+                </a>
             </li>
             <li>
-                <button id="menu-bible-button" class="w-full text-left bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-300" onclick="window.handleBibleClick(); window.toggleHamburgerMenu()">
+                <a href="bible.html" id="menu-bible-button" class="w-full text-left bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 block">
                     Bíblia
-                </button>
+                </a>
             </li>
             <li id="menu-login-item">
-                <button id="menu-login-button" class="w-full text-left bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300" onclick="window.toggleAuthModal(true); window.toggleHamburgerMenu()">
+                <button id="menu-login-button" class="w-full text-left bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300">
                     Login
                 </button>
             </li>
             <li id="menu-logout-item" class="hidden">
-                <button id="menu-logout-button" class="w-full text-left bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300" onclick="handleLogout(); window.toggleHamburgerMenu()">
+                <button id="menu-logout-button" class="w-full text-left bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300">
                     Logout
                 </button>
             </li>
         </ul>
     </nav>
-    <div id="hamburger-menu-overlay" class="hamburger-menu-overlay" onclick="window.toggleHamburgerMenu()"></div>
+    <div id="hamburger-menu-overlay" class="hamburger-menu-overlay"></div>
 
-
-    <!-- Conteúdo da Aplicação Principal (inicialmente oculto) -->
     <div id="app-content" class="hidden bg-white rounded-xl shadow-2xl p-8 w-full max-w-4xl mx-auto text-center">
         <p class="text-xl text-gray-700 mb-8 animate-fade-in-up">
             Bem-vindo(a)! Sua plataforma de interação e estudo.
         </p>
 
-        <!-- Exibe o ID do usuário para fins de depuração e colaboração -->
         <p class="text-sm text-gray-500 mb-6">
             Seu ID de Usuário: <span id="user-id-display" class="font-mono bg-gray-100 px-2 py-1 rounded-md text-purple-600 break-all"></span>
         </p>
 
-        <!-- Seção de Posts -->
         <div class="mt-8 bg-blue-50 p-6 rounded-lg shadow-inner">
             <h2 class="text-3xl font-bold text-blue-700 mb-4">Mural de Notícias e Posts</h2>
             <div id="posts-container" class="h-64 overflow-y-auto border border-gray-300 rounded-lg p-4 mb-4 bg-white shadow-sm">
-                <!-- Posts serão carregados aqui pelo JavaScript -->
-            </div>
-            <!-- Seção para adicionar posts, inicialmente oculta -->
+                </div>
             <div id="add-post-section" class="flex gap-2 hidden">
                 <textarea
                     id="new-post-content-textarea"
@@ -206,158 +141,21 @@
         </div>
     </div>
 
-    <!-- Nova Tela Exclusiva para a Bíblia -->
-    <div id="bible-screen" class="hidden fixed inset-0 bg-gradient-to-br from-green-100 to-teal-200 flex flex-col items-center justify-start p-4 z-30 overflow-y-auto">
-        <div class="w-full max-w-4xl bg-white rounded-xl shadow-2xl p-8 text-center relative">
-            <button id="close-bible-screen-button" onclick="window.toggleBibleScreen()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-
-            <h2 class="text-3xl font-bold text-center text-teal-700 mb-6">Central Bíblica 📖✨</h2>
-            <p class="text-gray-700 mb-8">Explore as escrituras e ferramentas de estudo.</p>
-
-            <!-- Seção de Estudo Bíblico Inteligente -->
-            <div class="mt-8 bg-green-50 p-6 rounded-lg shadow-inner">
-                <h3 class="text-2xl font-bold text-green-700 mb-4">Estudo Bíblico Inteligente</h3>
-                <div class="flex flex-col md:flex-row gap-4 mb-4">
-                    <textarea
-                        id="bible-question-input"
-                        placeholder="Pergunte sobre um versículo, tema ou conceito bíblico (ex: 'Explique João 3:16', 'O que é a Graça de Deus?')"
-                        rows="4"
-                        class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 resize-y"
-                    ></textarea>
-                    <button
-                        id="generate-bible-study-button"
-                        class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition duration-300 ease-in-out shadow-md self-end md:self-auto"
-                    >
-                        Gerar Estudo
-                    </button>
-                </div>
-                <div id="bible-loading-indicator" class="hidden flex justify-center items-center py-4">
-                    <div class="spinner"></div>
-                    <p class="ml-2 text-gray-600">Gerando resposta...</p>
-                </div>
-                <div id="bible-response-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800">
-                    <p class="text-gray-500 italic">Sua resposta será exibida aqui.</p>
-                </div>
-            </div>
-
-            <!-- Seção de Gerador de Orações Personalizadas -->
-            <div class="mt-8 bg-purple-100 p-6 rounded-lg shadow-inner">
-                <h3 class="text-2xl font-bold text-purple-700 mb-4">Gerador de Orações Personalizadas</h3>
-                <div class="flex flex-col md:flex-row gap-4 mb-4">
-                    <textarea
-                        id="prayer-topic-input"
-                        placeholder="Descreva o tema da sua oração (ex: 'gratidão pela família', 'força em tempos difíceis', 'sabedoria para decisões')"
-                        rows="4"
-                        class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-700 resize-y"
-                    ></textarea>
-                    <button
-                        id="generate-prayer-button"
-                        class="bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-800 transition duration-300 ease-in-out shadow-md self-end md:self-auto"
-                    >
-                        Gerar Oração
-                    </button>
-                </div>
-                <div id="prayer-loading-indicator" class="hidden flex justify-center items-center py-4">
-                    <div class="spinner"></div>
-                    <p class="ml-2 text-gray-600">Gerando oração...</p>
-                </div>
-                <div id="prayer-response-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800">
-                    <p class="text-gray-500 italic">Sua oração personalizada será exibida aqui.</p>
-                </div>
-            </div>
-
-            <!-- Seção de Leitura Bíblica -->
-            <div class="mt-8 bg-yellow-50 p-6 rounded-lg shadow-inner">
-                <h3 class="text-2xl font-bold text-yellow-700 mb-4">Leitura Bíblica</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <label for="bible-book-select" class="block text-gray-700 text-sm font-bold mb-2 text-left">Livro:</label>
-                        <select id="bible-book-select" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500">
-                            <!-- Opções serão preenchidas via JavaScript -->
-                        </select>
-                    </div>
-                    <div>
-                        <label for="bible-version-select" class="block text-gray-700 text-sm font-bold mb-2 text-left">Versão:</label>
-                        <select id="bible-version-select" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500">
-                            <!-- Opções serão preenchidas via JavaScript -->
-                        </select>
-                    </div>
-                    <div>
-                        <label for="bible-chapter-input" class="block text-gray-700 text-sm font-bold mb-2 text-left">Capítulo:</label>
-                        <input type="number" id="bible-chapter-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500" placeholder="23" value="1">
-                    </div>
-                    <div>
-                        <label for="bible-verses-input" class="block text-gray-700 text-sm font-bold mb-2 text-left">Versículos (opcional, ex: 1-3 ou 5):</label>
-                        <input type="text" id="bible-verses-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500" placeholder="1-6">
-                    </div>
-                </div>
-                <button
-                    id="fetch-bible-verse-button"
-                    class="bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-700 transition duration-300 ease-in-out shadow-md w-full md:w-auto"
-                >
-                    Buscar Versículo(s)
-                </button>
-                <div id="bible-verse-loading-indicator" class="hidden flex justify-center items-center py-4">
-                    <div class="spinner"></div>
-                    <p class="ml-2 text-gray-600">Buscando versículo(s)...</p>
-                </div>
-                <div id="bible-verse-display-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800 mt-4">
-                    <p class="text-gray-500 italic">O versículo ou passagem bíblica aparecerá aqui.</p>
-                </div>
-            </div>
-
-            <!-- Seção de Busca na Bíblia por Palavra-chave -->
-            <div class="mt-8 bg-red-50 p-6 rounded-lg shadow-inner">
-                <h3 class="text-2xl font-bold text-red-700 mb-4">Buscar na Bíblia por Palavra-chave</h3>
-                <div class="flex flex-col md:flex-row gap-4 mb-4">
-                    <input
-                        type="text"
-                        id="bible-search-input"
-                        placeholder="Digite uma palavra ou frase para buscar (ex: 'amor', 'fé', 'salvação')"
-                        class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                    />
-                    <button
-                        id="search-bible-button"
-                        class="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition duration-300 ease-in-out shadow-md self-end md:self-auto"
-                    >
-                        Buscar
-                    </button>
-                </div>
-                <div id="bible-search-loading-indicator" class="hidden flex justify-center items-center py-4">
-                    <div class="spinner"></div>
-                    <p class="ml-2 text-gray-600">Buscando...</p>
-                </div>
-                <div id="bible-search-results-area" class="bg-white border border-gray-300 rounded-lg p-4 text-left min-h-[100px] overflow-y-auto text-gray-800">
-                    <p class="text-gray-500 italic">Os resultados da busca aparecerão aqui.</p>
-                </div>
-            </div>
-
-            <button class="mt-8 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg" onclick="window.toggleBibleScreen()">Voltar para o Início</button>
-        </div>
-    </div>
-
-    <!-- Botão para alternar o chat flutuante -->
     <button id="toggle-floating-chat-button" class="fixed bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-full shadow-lg z-50 transition duration-300 text-2xl font-bold hidden">
         💬
     </button>
 
-    <!-- Contêiner do Chat Flutuante (inicialmente oculto) -->
     <div id="floating-chat-container" class="hidden fixed bottom-20 right-4 w-80 h-[400px] bg-white rounded-lg shadow-2xl flex flex-col z-40 overflow-hidden">
         <div class="bg-purple-700 text-white p-3 flex justify-between items-center rounded-t-lg">
             <h3 class="text-lg font-bold">Chat Rápida</h3>
-            <button id="close-floating-chat-button" onclick="window.toggleFloatingChat()" class="text-white hover:text-gray-200">
+            <button id="close-floating-chat-button" class="text-white hover:text-gray-200">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
         <div id="floating-messages-container" class="flex-grow overflow-y-auto p-4 bg-gray-50">
-            <!-- Mensagens do chat flutuante serão carregadas aqui -->
-        </div>
+            </div>
         <div class="p-4 border-t border-gray-200 flex gap-2">
             <input
                 type="text"
@@ -374,7 +172,6 @@
         </div>
     </div>
 
-    <!-- Modal de Autenticação (Login/Registro) -->
     <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal-overlay">
         <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md relative">
             <button id="close-auth-modal-button" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
@@ -388,17 +185,20 @@
                 <button id="show-register-form-button" class="px-4 py-2 text-lg font-semibold border-b-2 border-transparent text-gray-500 hover:text-purple-600 focus:outline-none">Registrar</button>
             </div>
 
-            <!-- Formulário de Login -->
             <form id="login-form" class="space-y-4">
                 <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Entrar</h2>
                 <div>
                     <label for="login-email" class="block text-gray-700 text-sm font-bold mb-2 text-left">Email:</label>
                     <input type="email" id="login-email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-500" placeholder="seuemail@exemplo.com" required>
                 </div>
+                <!-- Segurança: autocomplete off -->
+                <input type="hidden" autocomplete="off">
                 <div>
                     <label for="login-password" class="block text-gray-700 text-sm font-bold mb-2 text-left">Senha:</label>
                     <input type="password" id="login-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-500" placeholder="********" required>
                 </div>
+                <!-- Segurança: autocomplete off -->
+                <input type="hidden" autocomplete="off">
                 <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full transition duration-300">
                     Entrar
                 </button>
@@ -410,21 +210,26 @@
                 </div>
             </form>
 
-            <!-- Formulário de Registro -->
             <form id="register-form" class="space-y-4 hidden">
                 <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Registrar</h2>
                 <div>
                     <label for="register-email" class="block text-gray-700 text-sm font-bold mb-2 text-left">Email:</label>
                     <input type="email" id="register-email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-500" placeholder="seuemail@exemplo.com" required>
                 </div>
+                <!-- Segurança: autocomplete off -->
+                <input type="hidden" autocomplete="off">
                 <div>
                     <label for="register-password" class="block text-gray-700 text-sm font-bold mb-2 text-left">Senha:</label>
                     <input type="password" id="register-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-500" placeholder="********" required>
                 </div>
+                <!-- Segurança: autocomplete off -->
+                <input type="hidden" autocomplete="off">
                 <div>
                     <label for="register-confirm-password" class="block text-gray-700 text-sm font-bold mb-2 text-left">Confirmar Senha:</label>
                     <input type="password" id="register-confirm-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-500" placeholder="********" required>
                 </div>
+                <!-- Segurança: autocomplete off -->
+                <input type="hidden" autocomplete="off">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="register-first-name" class="block text-gray-700 text-sm font-bold mb-2 text-left">Nome:</label>
@@ -496,24 +301,6 @@
         </div>
     </div>
 
-    <!-- Tela de Administrador (agora uma div em tela cheia) -->
-    <div id="admin-screen" class="hidden fixed inset-0 bg-gray-100 flex flex-col items-center justify-start p-4 z-30 overflow-y-auto">
-        <div class="w-full max-w-4xl bg-white rounded-xl shadow-2xl p-8 text-center relative">
-            <button id="close-admin-screen-button" onclick="window.toggleAdminScreen()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-
-            <h2 class="text-3xl font-bold text-center text-orange-600 mb-6">Painel de Administração</h2>
-
-            <div id="admin-content" class="text-center">
-                <!-- Conteúdo do painel de administração será carregado aqui -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Novo Modal para Inserir Nome de Usuário Anônimo -->
     <div id="username-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal-overlay">
         <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm relative text-center">
             <button id="close-username-modal-button" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
@@ -523,13 +310,12 @@
             </button>
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Qual é o seu nome, Convidado?</h2>
             <input type="text" id="anonymous-username-input" placeholder="Digite seu nome" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-500 mb-4" required>
-            <button id="save-anonymous-username-button" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full transition duration-300">
+            <button id="save-anonymous-username-button" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full transition duration-300" autocomplete="off">
                 Salvar Nome
             </button>
         </div>
     </div>
 
-    <!-- Novo Rodapé -->
     <footer id="main-footer" class="w-full max-w-4xl mx-auto bg-gray-800 text-white p-4 rounded-xl shadow-lg text-center mt-8 hidden">
         <p class="text-sm">&copy; 2025 Conexão Eclesiástica. Todos os direitos reservados.</p>
         <p class="text-xs mt-2">Desenvolvido com Fé e Tecnologia.</p>
@@ -537,6 +323,13 @@
 
     <script type="module">
         // Importa os módulos necessários do Firebase
+        // --- SEGURANÇA: Função para sanitizar entradas (básico contra XSS) ---
+        function sanitizeInput(str) {
+            if (typeof str !== 'string') return '';
+            return str.replace(/[&<>"'/]/g, function (c) {
+                return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;','/':'&#x2F;'}[c]);
+            });
+        }
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
@@ -564,93 +357,36 @@
         const appId = firebaseConfig.appId;
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-        // Lista de livros da Bíblia (fornecida pelo usuário)
-        const bibleBooks = [
-            { abbrev: { pt: "gn", en: "gn" }, name: "Gênesis", author: "Moisés", chapters: 50, group: "Pentateuco", testament: "VT" },
-            { abbrev: { pt: "ex", en: "ex" }, name: "Êxodo", author: "Moisés", chapters: 40, group: "Pentateuco", testament: "VT" },
-            { abbrev: { pt: "lv", en: "lv" }, name: "Levítico", author: "Moisés", chapters: 27, group: "Pentateuco", testament: "VT" },
-            { abbrev: { pt: "nm", en: "nm" }, name: "Números", author: "Moisés", chapters: 36, group: "Pentateuco", testament: "VT" },
-            { abbrev: { pt: "dt", en: "dt" }, name: "Deuteronômio", author: "Moisés", chapters: 34, group: "Pentateuco", testament: "VT" },
-            { abbrev: { pt: "js", en: "js" }, name: "Josué", author: "Josué", chapters: 24, group: "Históricos", testament: "VT" },
-            { abbrev: { pt: "jz", en: "jd" }, name: "Juízes", author: "Samuel", chapters: 21, group: "Históricos", testament: "VT" },
-            { abbrev: { pt: "rt", en: "rt" }, name: "Rute", author: "Samuel", chapters: 4, group: "Históricos", testament: "VT" },
-            { abbrev: { pt: "1sm", en: "1sm" }, name: "1 Samuel", author: "Samuel", chapters: 31, group: "Históricos", testament: "VT" },
-            { abbrev: { pt: "2sm", en: "2sm" }, name: "2 Samuel", author: "Natã e Gade", chapters: 24, group: "Históricos", testament: "VT" },
-            { abbrev: { pt: "1rs", en: "1ki" }, name: "1 Reis", author: "Jeremias", chapters: 22, group: "Históricos", testament: "VT" },
-            { abbrev: { pt: "2rs", en: "2ki" }, name: "2 Reis", author: "Jeremias", chapters: 25, group: "Históricos", testament: "VT" },
-            { abbrev: { pt: "1cr", en: "1ch" }, name: "1 Crônicas", author: "Esdras", chapters: 29, group: "Históricos", testament: "VT" },
-            { abbrev: { pt: "2cr", en: "2ch" }, name: "2 Crônicas", author: "Esdras", chapters: 36, group: "Históricos", testament: "VT" },
-            { abbrev: { pt: "ed", en: "ezr" }, name: "Esdras", author: "Esdras", chapters: 10, group: "Históricos", testament: "VT" },
-            { abbrev: { pt: "ne", en: "ne" }, name: "Neemias", author: "Neemias", chapters: 13, group: "Históricos", testament: "VT" },
-            { abbrev: { pt: "et", en: "et" }, name: "Ester", author: "Desconhecido", chapters: 10, group: "Históricos", testament: "VT" },
-            { abbrev: { pt: "jo", en: "job" }, name: "Jó", author: "Desconhecido", chapters: 42, group: "Poéticos", testament: "VT" },
-            { abbrev: { pt: "sl", en: "ps" }, name: "Salmos", author: "David, Moisés, Salomão", chapters: 150, group: "Poéticos", testament: "VT" },
-            { abbrev: { pt: "pv", en: "pr" }, name: "Provérbios", author: "Salomão", chapters: 31, group: "Poéticos", testament: "VT" },
-            { abbrev: { pt: "ec", en: "ec" }, name: "Eclesiastes", author: "Salomão", chapters: 12, group: "Poéticos", testament: "VT" },
-            { abbrev: { pt: "ct", en: "so" }, name: "Cantares de Salomão", author: "Salomão", chapters: 8, group: "Poéticos", testament: "VT" },
-            { abbrev: { pt: "is", en: "is" }, name: "Isaías", author: "Isaías", chapters: 66, group: "Profetas Maiores", testament: "VT" },
-            { abbrev: { pt: "jr", en: "jr" }, name: "Jeremias", chapters: 52, group: "Profetas Maiores", testament: "VT" },
-            { abbrev: { pt: "lm", en: "la" }, name: "Lamentações de Jeremias", author: "Jeremias", chapters: 5, group: "Profetas Maiores", testament: "VT" },
-            { abbrev: { pt: "ez", en: "ez" }, name: "Ezequiel", author: "Ezequiel", chapters: 48, group: "Profetas Maiores", testament: "VT" },
-            { abbrev: { pt: "dn", en: "dn" }, name: "Daniel", author: "Daniel", chapters: 12, group: "Profetas Maiores", testament: "VT" },
-            { abbrev: { pt: "os", en: "ho" }, name: "Oséias", author: "Oséias", chapters: 14, group: "Profetas Menores", testament: "VT" },
-            { abbrev: { pt: "jl", en: "jl" }, name: "Joel", author: "Joel", chapters: 3, group: "Profetas Menores", testament: "VT" },
-            { abbrev: { pt: "am", en: "am" }, name: "Amós", author: "Amós", chapters: 9, group: "Profetas Menores", testament: "VT" },
-            { abbrev: { pt: "ob", en: "ob" }, name: "Obadias", author: "Obadias", chapters: 1, group: "Profetas Menores", testament: "VT" },
-            { abbrev: { pt: "jn", en: "jo" }, name: "Jonas", author: "Jonas", chapters: 4, group: "Profetas Menores", testament: "VT" },
-            { abbrev: { pt: "mq", en: "mi" }, name: "Miquéias", author: "Miquéias", chapters: 7, group: "Profetas Menores", testament: "VT" },
-            { abbrev: { pt: "na", en: "na" }, name: "Naum", author: "Naum", chapters: 3, group: "Profetas Menores", testament: "VT" },
-            { abbrev: { pt: "hc", en: "hb" }, name: "Habacuque", author: "Habacuque", chapters: 3, group: "Profetas Menores", testament: "VT" },
-            { abbrev: { pt: "sf", en: "zp" }, name: "Sofonias", author: "Sofonias", chapters: 3, group: "Profetas Menores", testament: "VT" },
-            { abbrev: { pt: "ag", en: "hg" }, name: "Ageu", author: "Ageu", chapters: 2, group: "Profetas Menores", testament: "VT" },
-            { abbrev: { pt: "zc", en: "zc" }, name: "Zacarias", author: "Zacarias", chapters: 14, group: "Profetas Menores", testament: "VT" },
-            { abbrev: { pt: "ml", en: "ml" }, name: "Malaquias", author: "Malaquias", chapters: 4, group: "Profetas Menores", testament: "VT" },
-            { abbrev: { pt: "mt", en: "mt" }, name: "Mateus", author: "Mateus", chapters: 28, group: "Evangelhos", testament: "NT" },
-            { abbrev: { pt: "mc", en: "mk" }, name: "Marcos", author: "Marcos", chapters: 16, group: "Evangelhos", testament: "NT" },
-            { abbrev: { pt: "lc", en: "lk" }, name: "Lucas", author: "Lucas", chapters: 24, group: "Evangelhos", testament: "NT" },
-            { abbrev: { pt: "jo", en: "jn" }, name: "João", author: "João", chapters: 21, group: "Evangelhos", testament: "NT" },
-            { abbrev: { pt: "at", en: "act" }, name: "Atos dos Apóstolos", author: "Lucas", chapters: 28, group: "Históricos", testament: "NT" },
-            { abbrev: { pt: "rm", en: "rm" }, name: "Romanos", author: "Paulo", chapters: 16, group: "Cartas Paulinas", testament: "NT" },
-            { abbrev: { pt: "1co", en: "1co" }, name: "1 Coríntios", author: "Paulo", chapters: 16, group: "Cartas Paulinas", testament: "NT" },
-            { abbrev: { pt: "2co", en: "2co" }, name: "2 Coríntios", author: "Paulo", chapters: 13, group: "Cartas Paulinas", testament: "NT" },
-            { abbrev: { pt: "gl", en: "gl" }, name: "Gálatas", author: "Paulo", chapters: 6, group: "Cartas Paulinas", testament: "NT" },
-            { abbrev: { pt: "ef", en: "ep" }, name: "Efésios", author: "Paulo", chapters: 6, group: "Cartas Paulinas", testament: "NT" },
-            { abbrev: { pt: "fp", en: "ph" }, name: "Filipenses", author: "Paulo", chapters: 4, group: "Cartas Paulinas", testament: "NT" },
-            { abbrev: { pt: "cl", en: "cl" }, name: "Colossenses", author: "Paulo", chapters: 4, group: "Cartas Paulinas", testament: "NT" },
-            { abbrev: { pt: "1ts", en: "1th" }, name: "1 Tessalonicenses", author: "Paulo", chapters: 5, group: "Cartas Paulinas", testament: "NT" },
-            { abbrev: { pt: "2ts", en: "2th" }, name: "2 Tessalonicenses", author: "Paulo", chapters: 3, group: "Cartas Paulinas", testament: "NT" },
-            { abbrev: { pt: "1tm", en: "1tm" }, name: "1 Timóteo", author: "Paulo", chapters: 6, group: "Cartas Paulinas", testament: "NT" },
-            { abbrev: { pt: "2tm", en: "2tm" }, name: "2 Timóteo", author: "Paulo", chapters: 4, group: "Cartas Paulinas", testament: "NT" },
-            { abbrev: { pt: "tt", en: "tt" }, name: "Tito", author: "Paulo", chapters: 3, group: "Cartas Paulinas", testament: "NT" },
-            { abbrev: { pt: "fm", en: "phm" }, name: "Filemom", author: "Paulo", chapters: 1, group: "Cartas Paulinas", testament: "NT" },
-            { abbrev: { pt: "hb", en: "heb" }, name: "Hebreus", author: "Desconhecido", chapters: 13, group: "Cartas Gerais", testament: "NT" },
-            { abbrev: { pt: "tg", en: "jas" }, name: "Tiago", author: "Tiago", chapters: 5, group: "Cartas Gerais", testament: "NT" },
-            { abbrev: { pt: "1pe", en: "1pe" }, name: "1 Pedro", author: "Pedro", chapters: 5, group: "Cartas Gerais", testament: "NT" },
-            { abbrev: { pt: "2pe", en: "2pe" }, name: "2 Pedro", author: "Pedro", chapters: 3, group: "Cartas Gerais", testament: "NT" },
-            { abbrev: { pt: "1jo", en: "1jn" }, name: "1 João", author: "João", chapters: 5, group: "Cartas Gerais", testament: "NT" },
-            { abbrev: { pt: "2jo", en: "2jn" }, name: "2 João", author: "João", chapters: 1, group: "Cartas Gerais", testament: "NT" },
-            { abbrev: { pt: "3jo", en: "3jn" }, name: "3 João", author: "João", chapters: 1, group: "Cartas Gerais", testament: "NT" },
-            { abbrev: { pt: "jd", en: "jud" }, name: "Judas", author: "Judas", chapters: 1, group: "Cartas Gerais", testament: "NT" },
-            { abbrev: { pt: "ap", en: "re" }, name: "Apocalipse", author: "João", chapters: 22, group: "Profético", testament: "NT" }
-        ];
-
-        // Lista de versões da Bíblia (fornecida pelo usuário)
-        const bibleVersions = [
-            { version: "acf", verses: 31106 },
-            { version: "apee", verses: 30975 },
-            { version: "bbe", verses: 31104 },
-            { version: "nvi", verses: 31103 } // Adicionei NVI para que possa ser selecionada
-        ];
-
-        // Dados mock para configurações da aplicação
+        // Dados mock para configurações da aplicação (apenas para simulação, em um projeto real viriam do Firestore)
         let appSettings = {
             welcomeMessage: "Bem-vindo(a) à Conexão Eclesiástica! Que a paz de Deus esteja com você.",
             defaultChatMessage: "Olá a todos! Compartilhem suas bênçãos e orações.",
-            allowAnonymousPosting: false, // Por padrão, anônimos não podem postar
+            allowAnonymousPosting: false,
             publicChatEnabled: true,
             maintenanceMode: false
         };
 
+        // Função para exibir um loading global (spinner ou mensagem)
+        function showGlobalLoading(show) {
+            let loadingDiv = document.getElementById('global-loading-indicator');
+            if (!loadingDiv) {
+                loadingDiv = document.createElement('div');
+                loadingDiv.id = 'global-loading-indicator';
+                loadingDiv.style.position = 'fixed';
+                loadingDiv.style.top = '0';
+                loadingDiv.style.left = '0';
+                loadingDiv.style.width = '100vw';
+                loadingDiv.style.height = '100vh';
+                loadingDiv.style.background = 'rgba(0,0,0,0.3)';
+                loadingDiv.style.display = 'flex';
+                loadingDiv.style.alignItems = 'center';
+                loadingDiv.style.justifyContent = 'center';
+                loadingDiv.style.zIndex = '9999';
+                loadingDiv.innerHTML = '<div style="background:#fff;padding:32px 48px;border-radius:16px;box-shadow:0 2px 16px #0002;font-size:1.2rem;font-weight:bold;">Carregando...</div>';
+                document.body.appendChild(loadingDiv);
+            }
+            loadingDiv.style.display = show ? 'flex' : 'none';
+        }
 
         // Função para inicializar o Firebase e configurar a autenticação
         const initFirebase = async () => {
@@ -660,41 +396,34 @@
                 auth = getAuth(app);
                 analytics = getAnalytics(app);
 
-                // Listener para mudanças no estado de autenticação
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
                         userId = user.uid;
                         console.log("Usuário autenticado:", userId);
 
-                        // Tenta buscar o nome do usuário no perfil
                         const userProfileRef = doc(db, `artifacts/${appId}/users/${userId}/profile`, 'details');
                         const userProfileSnap = await getDoc(userProfileRef);
                         if (userProfileSnap.exists() && userProfileSnap.data().firstName) {
                             userName = userProfileSnap.data().firstName;
-                            document.getElementById('user-name-display').textContent = userName; // Atualiza o nome no cabeçalho
-                            document.getElementById('profile-avatar').classList.remove('hidden'); // Mostra o avatar
+                            document.getElementById('user-name-display').textContent = userName;
+                            document.getElementById('profile-avatar').classList.remove('hidden');
                             document.getElementById('user-id-display').textContent = `${userName} (${userId.substring(0, 8)}...)`;
                         } else {
-                            userName = null; // Reseta o nome se não encontrado
-                            document.getElementById('user-name-display').textContent = user.isAnonymous ? 'Convidado' : 'Usuário'; // Exibe "Convidado" ou "Usuário"
-                            document.getElementById('profile-avatar').classList.add('hidden'); // Esconde o avatar para visitantes
+                            userName = null;
+                            document.getElementById('user-name-display').textContent = user.isAnonymous ? 'Convidado' : 'Usuário';
+                            document.getElementById('profile-avatar').classList.add('hidden');
                             document.getElementById('user-id-display').textContent = user.isAnonymous ? `${userId} (Anônimo)` : userId;
                         }
                         
-                        // Os botões de login/logout no cabeçalho principal foram movidos para o menu hambúrguer
-                        // const loginButton = document.getElementById('login-button');
-                        // if (loginButton) loginButton.classList.add('hidden');
-                        // const logoutButton = document.getElementById('logout-button');
-                        // if (logoutButton) logoutButton.classList.remove('hidden');
-                        
                         const addPostSection = document.getElementById('add-post-section');
-                        if (user.isAnonymous) {
-                            if (addPostSection) addPostSection.classList.add('hidden');
-                        } else {
-                            if (addPostSection) addPostSection.classList.remove('hidden');
+                        if (addPostSection) {
+                            if (user.isAnonymous) {
+                                addPostSection.classList.add('hidden');
+                            } else {
+                                addPostSection.classList.remove('hidden');
+                            }
                         }
 
-                        // Atualiza visibilidade dos botões no menu hambúrguer
                         const menuLoginItem = document.getElementById('menu-login-item');
                         const menuLogoutItem = document.getElementById('menu-logout-item');
                         if (menuLoginItem) menuLoginItem.classList.add('hidden');
@@ -702,68 +431,49 @@
 
                     } else {
                         userId = null;
-                        userName = null; // Reseta o nome ao deslogar
+                        userName = null;
                         console.log("Usuário não autenticado.");
                         const userIdDisplay = document.getElementById('user-id-display');
                         if (userIdDisplay) userIdDisplay.textContent = 'Não disponível';
                         const userNameDisplay = document.getElementById('user-name-display');
-                        if (userNameDisplay) userNameDisplay.textContent = 'Visitante'; // Define como Visitante
+                        if (userNameDisplay) userNameDisplay.textContent = 'Visitante';
                         const profileAvatar = document.getElementById('profile-avatar');
-                        if (profileAvatar) profileAvatar.classList.add('hidden'); // Esconde o avatar para visitantes
-                        
-                        // Os botões de login/logout no cabeçalho principal foram movidos para o menu hambúrguer
-                        // const loginButton = document.getElementById('login-button');
-                        // if (loginButton) loginButton.classList.remove('hidden');
-                        // const logoutButton = document.getElementById('logout-button');
-                        // if (logoutButton) logoutButton.classList.add('hidden');
+                        if (profileAvatar) profileAvatar.classList.add('hidden');
                         
                         const addPostSection = document.getElementById('add-post-section');
                         if (addPostSection) addPostSection.classList.add('hidden');
 
-                        // Atualiza visibilidade dos botões no menu hambúrguer
                         const menuLoginItem = document.getElementById('menu-login-item');
                         const menuLogoutItem = document.getElementById('menu-logout-item');
                         if (menuLoginItem) menuLoginItem.classList.remove('hidden');
                         if (menuLogoutItem) menuLogoutItem.classList.add('hidden');
 
-
                         if (initialAuthToken) {
                             try {
                                 await signInWithCustomToken(auth, initialAuthToken);
                                 console.log("Autenticado com token personalizado.");
-                            }
-                            // Não há mais fallback para signInAnonymously aqui, o usuário precisará fazer login ou registrar-se explicitamente.
-                            catch (customTokenError) {
+                            } catch (customTokenError) {
                                 console.warn("Falha na autenticação com token personalizado:", customTokenError);
                             }
                         }
                     }
                     isAuthReady = true;
-                    // Move a exibição do app-content para aqui, após a autenticação
-                    const loadingMessage = document.getElementById('loading-message');
-                    const appContent = document.getElementById('app-content');
-                    const headerElement = document.getElementById('main-header');
-                    const toggleChatButtonElement = document.getElementById('toggle-floating-chat-button');
-                    const footerElement = document.getElementById('main-footer');
-
-                    if (loadingMessage) loadingMessage.classList.add('hidden');
-                    if (appContent) appContent.classList.remove('hidden');
-                    if (headerElement) headerElement.classList.remove('hidden');
-                    if (toggleChatButtonElement) toggleChatButtonElement.classList.remove('hidden');
-                    if (footerElement) footerElement.classList.remove('hidden');
-
+                    // Mostra o conteúdo da aplicação após a autenticação
+                    document.getElementById('loading-message')?.classList.add('hidden');
+                    document.getElementById('app-content')?.classList.remove('hidden');
+                    document.getElementById('main-header')?.classList.remove('hidden');
+                    document.getElementById('toggle-floating-chat-button')?.classList.remove('hidden');
+                    document.getElementById('main-footer')?.classList.remove('hidden');
 
                     setupChatListener();
                     setupPostsListener();
                 });
             } catch (error) {
                 console.error("Erro ao inicializar Firebase:", error);
-                const loadingMessage = document.getElementById('loading-message');
-                if (loadingMessage) loadingMessage.textContent = 'Erro ao carregar a aplicação.';
+                document.getElementById('loading-message').textContent = 'Erro ao carregar a aplicação.';
             }
         };
 
-        // Função para configurar o listener de mensagens do chat
         const setupChatListener = () => {
             if (db && userId && isAuthReady) {
                 console.log("Configurando listener de mensagens para userId:", userId);
@@ -787,7 +497,6 @@
                         fetchedMessages.forEach(msg => {
                             const msgDiv = document.createElement('div');
                             msgDiv.className = `mb-2 p-2 rounded-lg max-w-[80%] ${msg.userId === userId ? 'bg-purple-200 ml-auto text-right' : 'bg-gray-200 mr-auto text-left'}`;
-                            // Exibe o nome do usuário se disponível, senão o UID truncado
                             const senderDisplayName = msg.senderName || `Usuário: ${msg.userId.substring(0, 8)}...`;
                             const timestampText = msg.timestamp ? new Date(msg.timestamp.seconds * 1000).toLocaleString() : 'Data desconhecida';
                             msgDiv.innerHTML = `
@@ -806,7 +515,6 @@
             }
         };
 
-        // Função para configurar o listener de posts
         const setupPostsListener = () => {
             if (db && userId && isAuthReady) {
                 console.log("Configurando listener de posts para userId:", userId);
@@ -830,10 +538,9 @@
                         fetchedPosts.forEach(post => {
                             const postDiv = document.createElement('div');
                             postDiv.className = "mb-4 p-3 border-b border-gray-200 last:border-b-0";
-                            // Exibe o nome do usuário se disponível, senão o UID truncado
                             const senderDisplayName = post.senderName || `Usuário: ${post.userId.substring(0, 8)}...`;
                             const timestampText = post.timestamp ? new Date(post.timestamp.seconds * 1000).toLocaleString() : 'Data desconhecida';
-                            msgDiv.innerHTML = `
+                            postDiv.innerHTML = `
                                 <p class="text-sm font-semibold text-blue-800">${post.userId === userId ? 'Você' : senderDisplayName}</p>
                                 <p class="text-gray-800 text-lg">${post.content}</p>
                                 <span class="text-xs text-gray-500">${timestampText}</span>
@@ -879,7 +586,8 @@
         const sendMessage = async () => {
             const newMessageInput = document.getElementById('floating-new-message-input');
             if (!newMessageInput) return;
-            const newMessage = newMessageInput.value.trim();
+            let newMessage = newMessageInput.value.trim();
+            newMessage = sanitizeInput(newMessage);
 
             if (!db || !userId || !newMessage) {
                 showNotification("Por favor, digite uma mensagem.", 'error');
@@ -890,7 +598,7 @@
                 await addDoc(chatCollectionRef, {
                     text: newMessage,
                     userId: userId,
-                    senderName: userName || `Anônimo (${userId.substring(0,4)})`, // Adiciona o nome do remetente
+                    senderName: sanitizeInput(userName || `Anônimo (${userId.substring(0,4)})`),
                     timestamp: new Date(),
                 });
                 newMessageInput.value = '';
@@ -904,7 +612,8 @@
         const addPost = async () => {
             const newPostContentTextarea = document.getElementById('new-post-content-textarea');
             if (!newPostContentTextarea) return;
-            const newPostContent = newPostContentTextarea.value.trim();
+            let newPostContent = newPostContentTextarea.value.trim();
+            newPostContent = sanitizeInput(newPostContent);
 
             if (!userId) {
                 showNotification("Você precisa estar logado para postar.", 'error');
@@ -925,7 +634,7 @@
                 await addDoc(postsCollectionRef, {
                     content: newPostContent,
                     userId: userId,
-                    senderName: userName, // Adiciona o nome do remetente
+                    senderName: sanitizeInput(userName),
                     timestamp: new Date(),
                 });
                 newPostContentTextarea.value = '';
@@ -937,7 +646,7 @@
         };
 
         // Funções para o Modal de Autenticação
-        window.toggleAuthModal = (showLogin = true) => { // Tornada global
+        const toggleAuthModal = (showLogin = true) => {
             const authModal = document.getElementById('auth-modal');
             if (!authModal) return;
             authModal.classList.toggle('hidden');
@@ -992,13 +701,12 @@
             }
         };
 
-        // Função para login anônimo e solicitação de nome
         const signInAnonymouslyUser = async () => {
             try {
                 const userCredential = await signInAnonymously(auth);
                 const user = userCredential.user;
                 showNotification("Login como convidado realizado com sucesso!", 'success');
-                window.toggleAuthModal(false); // Fecha o modal de autenticação
+                toggleAuthModal(false);
 
                 const usernameModal = document.getElementById('username-modal');
                 const anonymousUsernameInput = document.getElementById('anonymous-username-input');
@@ -1012,9 +720,9 @@
             }
         };
 
-        // Função para salvar o nome do usuário anônimo
         const saveAnonymousUsername = async () => {
-            const inputName = document.getElementById('anonymous-username-input').value.trim();
+            let inputName = document.getElementById('anonymous-username-input').value.trim();
+            inputName = sanitizeInput(inputName);
             if (!inputName) {
                 showNotification("Por favor, digite um nome.", 'error');
                 return;
@@ -1025,18 +733,18 @@
                     const userProfileRef = doc(db, `artifacts/${appId}/users/${auth.currentUser.uid}/profile`, 'details');
                     await setDoc(userProfileRef, {
                         firstName: inputName,
-                        isAnonymousProfile: true, // Marca como perfil anônimo
+                        isAnonymousProfile: true,
                         registeredAt: new Date(),
-                    }, { merge: true }); // Usa merge para não sobrescrever outros campos se existirem
+                    }, { merge: true });
 
-                    userName = inputName; // Atualiza o nome global
+                    userName = inputName;
                     document.getElementById('user-id-display').textContent = `${userName} (Anônimo)`;
                     showNotification("Nome salvo com sucesso!", 'success');
                     
                     const usernameModal = document.getElementById('username-modal');
                     const anonymousUsernameInput = document.getElementById('anonymous-username-input');
                     if (usernameModal) usernameModal.classList.add('hidden');
-                    if (anonymousUsernameInput) anonymousUsernameInput.value = ''; // Limpa o campo
+                    if (anonymousUsernameInput) anonymousUsernameInput.value = '';
                 } catch (error) {
                     showNotification("Erro ao salvar o nome.", 'error');
                     console.error("Erro ao salvar nome anônimo:", error);
@@ -1046,24 +754,23 @@
             }
         };
 
-
         const handleRegister = async (event) => {
             event.preventDefault();
 
-            const email = document.getElementById('register-email').value;
+            const email = sanitizeInput(document.getElementById('register-email').value);
             const password = document.getElementById('register-password').value;
             const confirmPassword = document.getElementById('register-confirm-password').value;
-            const firstName = document.getElementById('register-first-name').value;
-            const lastName = document.getElementById('register-last-name').value;
+            const firstName = sanitizeInput(document.getElementById('register-first-name').value);
+            const lastName = sanitizeInput(document.getElementById('register-last-name').value);
             const dob = document.getElementById('register-dob').value;
-            const gender = document.getElementById('register-gender').value;
-            const phone = document.getElementById('register-phone').value;
-            const street = document.getElementById('register-street').value;
-            const city = document.getElementById('register-city').value;
-            const state = document.getElementById('register-state').value;
-            const zip = document.getElementById('register-zip').value;
-            const churchName = document.getElementById('register-church-name').value;
-            const churchRole = document.getElementById('register-church-role').value;
+            const gender = sanitizeInput(document.getElementById('register-gender').value);
+            const phone = sanitizeInput(document.getElementById('register-phone').value);
+            const street = sanitizeInput(document.getElementById('register-street').value);
+            const city = sanitizeInput(document.getElementById('register-city').value);
+            const state = sanitizeInput(document.getElementById('register-state').value);
+            const zip = sanitizeInput(document.getElementById('register-zip').value);
+            const churchName = sanitizeInput(document.getElementById('register-church-name').value);
+            const churchRole = sanitizeInput(document.getElementById('register-church-role').value);
             const termsAccepted = document.getElementById('register-terms').checked;
 
             if (password !== confirmPassword) {
@@ -1095,11 +802,11 @@
                     churchName: churchName,
                     churchRole: churchRole,
                     registeredAt: new Date(),
-                    isAnonymousProfile: false, // Marca como perfil não anônimo
+                    isAnonymousProfile: false,
                 });
 
                 showNotification("Registro e login bem-sucedidos!", 'success');
-                window.toggleAuthModal(false); // Chamada corrigida
+                toggleAuthModal(false);
                 document.getElementById('register-form').reset();
             }
             catch (error) {
@@ -1119,13 +826,13 @@
         const handleLogin = async (event) => {
             event.preventDefault();
 
-            const email = document.getElementById('login-email').value;
+            const email = sanitizeInput(document.getElementById('login-email').value);
             const password = document.getElementById('login-password').value;
 
             try {
                 await signInWithEmailAndPassword(auth, email, password);
                 showNotification("Login bem-sucedido!", 'success');
-                window.toggleAuthModal(false); // Chamada corrigida
+                toggleAuthModal(false);
                 document.getElementById('login-form').reset();
             } catch (error) {
                 let errorMessage = "Erro ao fazer login. Verifique suas credenciais.";
@@ -1150,92 +857,8 @@
             }
         };
 
-        // Funções para a Tela de Administrador (agora uma div em tela cheia)
-        window.toggleAdminScreen = () => {
-            const adminScreen = document.getElementById('admin-screen');
-            const appContent = document.getElementById('app-content');
-            const header = document.getElementById('main-header'); // Usando ID
-            const floatingChatButton = document.getElementById('toggle-floating-chat-button');
-            const footer = document.getElementById('main-footer'); // Usando ID
-            const hamburgerMenu = document.getElementById('hamburger-menu');
-            const hamburgerOverlay = document.getElementById('hamburger-menu-overlay');
-
-
-            if (adminScreen && appContent && header && floatingChatButton && footer && hamburgerMenu && hamburgerOverlay) { // Verifica se todos os elementos existem
-                if (adminScreen.classList.contains('hidden')) {
-                    // Entrando na tela de administração
-                    appContent.classList.add('hidden');
-                    header.classList.add('hidden');
-                    floatingChatButton.classList.add('hidden');
-                    footer.classList.add('hidden');
-                    hamburgerMenu.classList.remove('open'); // Fecha o menu hambúrguer se estiver aberto
-                    hamburgerOverlay.classList.remove('open'); // Esconde o overlay
-                    adminScreen.classList.remove('hidden');
-                    window.loadAdminDashboard();
-                } else {
-                    // Saindo da tela de administração
-                    adminScreen.classList.add('hidden');
-                    appContent.classList.remove('hidden');
-                    header.classList.remove('hidden');
-                    floatingChatButton.classList.remove('hidden');
-                    footer.classList.remove('hidden');
-                }
-            } else {
-                console.error("Erro: Um ou mais elementos essenciais para alternar a tela de administração não foram encontrados.");
-                showNotification("Erro ao alternar tela de administração.", 'error');
-            }
-        };
-
-        // Atribui handleAdminClick ao window para ser chamado pelo botão "Administrador"
-        window.handleAdminClick = () => {
-            window.toggleAdminScreen();
-        };
-
-        // Nova função para alternar a tela da Bíblia
-        window.toggleBibleScreen = () => {
-            const bibleScreen = document.getElementById('bible-screen');
-            const appContent = document.getElementById('app-content');
-            const header = document.getElementById('main-header');
-            const floatingChatButton = document.getElementById('toggle-floating-chat-button');
-            const footer = document.getElementById('main-footer');
-            const hamburgerMenu = document.getElementById('hamburger-menu');
-            const hamburgerOverlay = document.getElementById('hamburger-menu-overlay');
-
-
-            if (bibleScreen && appContent && header && floatingChatButton && footer && hamburgerMenu && hamburgerOverlay) {
-                if (bibleScreen.classList.contains('hidden')) {
-                    // Entrando na tela da Bíblia
-                    appContent.classList.add('hidden');
-                    header.classList.add('hidden'); // Oculta o cabeçalho na tela da Bíblia
-                    floatingChatButton.classList.add('hidden'); // Oculta o botão de chat
-                    footer.classList.add('hidden'); // Oculta o rodapé
-                    hamburgerMenu.classList.remove('open'); // Fecha o menu hambúrguer se estiver aberto
-                    hamburgerOverlay.classList.remove('open'); // Esconde o overlay
-                    bibleScreen.classList.remove('hidden');
-                    // Opcional: recarregar dropdowns ou dados se necessário
-                    populateBibleBooksDropdown();
-                    populateBibleVersionsDropdown();
-                } else {
-                    // Saindo da tela da Bíblia
-                    bibleScreen.classList.add('hidden');
-                    appContent.classList.remove('hidden');
-                    header.classList.remove('hidden'); // Mostra o cabeçalho
-                    floatingChatButton.classList.remove('hidden'); // Mostra o botão de chat
-                    footer.classList.remove('hidden'); // Mostra o rodapé
-                }
-            } else {
-                console.error("Erro: Um ou mais elementos essenciais para alternar a tela da Bíblia não foram encontrados.");
-                showNotification("Erro ao alternar tela da Bíblia.", 'error');
-            }
-        };
-
-        // Atribui handleBibleClick ao window para ser chamado pelo botão "Bíblia"
-        window.handleBibleClick = () => {
-            window.toggleBibleScreen();
-        };
-
-        // Função para alternar o chat flutuante
-        window.toggleFloatingChat = () => {
+        // Funções para o menu hambúrguer e chat flutuante
+        const toggleFloatingChat = () => {
             const floatingChatContainer = document.getElementById('floating-chat-container');
             const hamburgerMenu = document.getElementById('hamburger-menu');
             const hamburgerOverlay = document.getElementById('hamburger-menu-overlay');
@@ -1243,15 +866,13 @@
             if (!floatingChatContainer) return;
 
             floatingChatContainer.classList.toggle('hidden');
-            // Fecha o menu hambúrguer se estiver aberto ao abrir/fechar o chat
             if (hamburgerMenu && hamburgerMenu.classList.contains('open')) {
                 hamburgerMenu.classList.remove('open');
                 if (hamburgerOverlay) hamburgerOverlay.classList.remove('open');
             }
         };
 
-        // Função para alternar o menu hambúrguer
-        window.toggleHamburgerMenu = () => {
+        const toggleHamburgerMenu = () => {
             const hamburgerMenu = document.getElementById('hamburger-menu');
             const hamburgerOverlay = document.getElementById('hamburger-menu-overlay');
             const floatingChatContainer = document.getElementById('floating-chat-container');
@@ -1261,747 +882,108 @@
             hamburgerMenu.classList.toggle('open');
             hamburgerOverlay.classList.toggle('open');
 
-            // Fecha o chat flutuante se estiver aberto ao abrir/fechar o menu hambúrguer
             if (floatingChatContainer && !floatingChatContainer.classList.contains('hidden')) {
                 floatingChatContainer.classList.add('hidden');
             }
         };
 
-
-        window.loadAdminDashboard = () => {
-            console.log("Carregando dashboard de administração...");
-            const adminContent = document.getElementById('admin-content');
-            if (!adminContent) {
-                console.error("Elemento 'admin-content' não encontrado.");
-                return;
-            }
-            adminContent.innerHTML = `
-                <h3 class="text-xl font-bold text-gray-800 mb-4">Visão Geral do Administrador</h3>
-                <p class="text-gray-700">Bem-vindo ao painel de administração. Selecione uma opção para gerenciar:</p>
-                <ul class="mt-4 space-y-2 text-left">
-                    <li><button class="text-blue-600 hover:underline" onclick="window.showManageUsers()">Gerenciar Usuários</button></li>
-                    <li><button class="text-blue-600 hover:underline" onclick="window.showManagePosts()">Gerenciar Posts</button></li>
-                    <li><button class="text-blue-600 hover:underline" onclick="window.showAppSettings()">Configurações da Aplicação</button></li>
-                </ul>
-                <button class="mt-8 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg" onclick="window.toggleAdminScreen()">Voltar para o Início</button>
-            `;
-        };
-
-        window.showManageUsers = async () => {
-            const adminContent = document.getElementById('admin-content');
-            if (!adminContent) {
-                console.error("Elemento 'admin-content' não encontrado em showManageUsers.");
-                return;
-            }
-            adminContent.innerHTML = `
-                <h3 class="text-xl font-bold text-gray-800 mb-4">Gerenciar Usuários</h3>
-                <div id="admin-users-loading" class="flex justify-center items-center py-4">
-                    <div class="spinner"></div>
-                    <p class="ml-2 text-gray-600">Carregando usuários...</p>
-                </div>
-                <div id="admin-users-table-container" class="overflow-x-auto"></div>
-                <button class="mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg" onclick="window.loadAdminDashboard()">Voltar</button>
-            `;
-
-            const usersTableContainer = document.getElementById('admin-users-table-container');
-            const usersLoading = document.getElementById('admin-users-loading');
-
-            // Simulação de chamada API com headers
-            try {
-                if (usersLoading) usersLoading.classList.remove('hidden');
-                // Simula um atraso de rede para demonstrar o carregamento
-                await new Promise(resolve => setTimeout(resolve, 1500)); 
-
-                // Dados mock de usuários com a nova estrutura simplificada
-                const mockUsers = [
-                    { id: 'user123', name: 'João Silva', email: 'joao@example.com', token: 'eyJhbGciOiJIU...', notifications: true },
-                    { id: 'user456', name: 'Maria Souza', email: 'maria@example.com', token: 'eyJhbGciOiJIU...', notifications: false },
-                    { id: 'user789', name: 'Convidado_XYZ', email: 'anon1@example.com', token: 'eyJhbGciOiJIU...', notifications: true },
-                    { id: 'user012', name: 'Pedro Alves', email: 'pedro@example.com', token: 'eyJhbGciOiJIU...', notifications: true },
-                ];
-
-                // Em um cenário real, você faria uma requisição fetch para seu backend de administração:
-                /*
-                const token_do_administrador = await auth.currentUser.getIdToken();
-                const response = await fetch('/api/admin/users', {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json', 
-                        'Authorization': `Bearer ${token_do_administrador}` 
-                    }
-                });
-                const users = await response.json();
-                */
-
-                let tableHtml = `
-                    <table class="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
-                        <thead class="bg-gray-200">
-                            <tr>
-                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">ID (truncado)</th>
-                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Nome</th>
-                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Email</th>
-                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Token (truncado)</th>
-                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Notificações</th>
-                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-                mockUsers.forEach(user => {
-                    tableHtml += `
-                        <tr class="hover:bg-gray-50">
-                            <td class="py-2 px-4 border-b text-sm text-gray-800">${user.id.substring(0, 8)}...</td>
-                            <td class="py-2 px-4 border-b text-sm text-gray-800">${user.name}</td>
-                            <td class="py-2 px-4 border-b text-sm text-gray-800">${user.email}</td>
-                            <td class="py-2 px-4 border-b text-sm text-gray-800">${user.token.substring(0, 10)}...</td>
-                            <td class="py-2 px-4 border-b text-sm text-gray-800">${user.notifications ? 'Sim' : 'Não'}</td>
-                            <td class="py-2 px-4 border-b text-sm">
-                                <button class="bg-blue-500 text-white px-3 py-1 rounded-md text-xs hover:bg-blue-600 mr-1">Editar</button>
-                                <button class="bg-red-500 text-white px-3 py-1 rounded-md text-xs hover:bg-red-600">Excluir</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                tableHtml += `
-                        </tbody>
-                    </table>
-                `;
-                if (usersTableContainer) usersTableContainer.innerHTML = tableHtml;
-                showNotification("Lista de usuários carregada!", 'success');
-
-            } catch (error) {
-                if (usersTableContainer) usersTableContainer.innerHTML = `<p class="text-red-500">Erro ao carregar usuários: ${error.message}</p>`;
-                showNotification("Erro ao carregar usuários.", 'error');
-                console.error("Erro ao gerenciar usuários:", error);
-            } finally {
-                if (usersLoading) usersLoading.classList.add('hidden');
-            }
-        };
-
-        window.showManagePosts = async () => {
-            const adminContent = document.getElementById('admin-content');
-            if (!adminContent) {
-                console.error("Elemento 'admin-content' não encontrado em showManagePosts.");
-                return;
-            }
-            adminContent.innerHTML = `
-                <h3 class="text-xl font-bold text-gray-800 mb-4">Gerenciar Posts</h3>
-                <div id="admin-posts-loading" class="flex justify-center items-center py-4">
-                    <div class="spinner"></div>
-                    <p class="ml-2 text-gray-600">Carregando posts...</p>
-                </div>
-                <div id="admin-posts-table-container" class="overflow-x-auto"></div>
-                <button class="mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg" onclick="window.loadAdminDashboard()">Voltar</button>
-            `;
-
-            const postsTableContainer = document.getElementById('admin-posts-table-container');
-            const postsLoading = document.getElementById('admin-posts-loading');
-
-            // Simulação de chamada API com headers
-            try {
-                if (postsLoading) postsLoading.classList.remove('hidden');
-                // Simula um atraso de rede
-                await new Promise(resolve => setTimeout(resolve, 1500)); 
-
-                // Dados mock de posts
-                const mockPosts = [
-                    { id: 'postA1', author: 'João Silva', content: 'Que dia abençoado na igreja hoje!', timestamp: new Date().toLocaleString(), status: 'publicado' },
-                    { id: 'postB2', author: 'Maria Souza', content: 'Versículo do dia: Salmos 23:1', timestamp: new Date().toLocaleString(), status: 'publicado' },
-                    { id: 'postC3', author: 'Convidado_XYZ', content: 'Olá a todos!', timestamp: new Date().toLocaleString(), status: 'pendente' },
-                ];
-
-                // Em um cenário real, você faria uma requisição fetch para seu backend de administração:
-                /*
-                const token_do_administrador = "eyJhbGciOiJIU..."; // Obtenha o token do usuário administrador logado
-                const response = await fetch('/api/admin/posts', {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json', 
-                        'Authorization': `Bearer ${token_do_administrador}` // Token de autenticação do administrador
-                    }
-                });
-                const posts = await response.json();
-                */
-
-                let tableHtml = `
-                    <table class="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
-                        <thead class="bg-gray-200">
-                            <tr>
-                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">ID (truncado)</th>
-                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Autor</th>
-                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Conteúdo</th>
-                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Data</th>
-                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Status</th>
-                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-                mockPosts.forEach(post => {
-                    tableHtml += `
-                        <tr class="hover:bg-gray-50">
-                            <td class="py-2 px-4 border-b text-sm text-gray-800">${post.id.substring(0, 8)}...</td>
-                            <td class="py-2 px-4 border-b text-sm text-gray-800">${post.author}</td>
-                            <td class="py-2 px-4 border-b text-sm text-gray-800 truncate max-w-xs">${post.content}</td>
-                            <td class="py-2 px-4 border-b text-sm text-gray-800">${post.timestamp}</td>
-                            <td class="py-2 px-4 border-b text-sm text-gray-800">${post.status}</td>
-                            <td class="py-2 px-4 border-b text-sm">
-                                <button class="bg-blue-500 text-white px-3 py-1 rounded-md text-xs hover:bg-blue-600 mr-1">Editar</button>
-                                <button class="bg-red-500 text-white px-3 py-1 rounded-md text-xs hover:bg-red-600">Excluir</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                tableHtml += `
-                        </tbody>
-                    </table>
-                `;
-                if (postsTableContainer) postsTableContainer.innerHTML = tableHtml;
-                showNotification("Lista de posts carregada!", 'success');
-
-            } catch (error) {
-                if (postsTableContainer) postsTableContainer.innerHTML = `<p class="text-red-500">Erro ao carregar posts: ${error.message}</p>`;
-                showNotification("Erro ao carregar posts.", 'error');
-                console.error("Erro ao gerenciar posts:", error);
-            } finally {
-                if (postsLoading) postsLoading.classList.add('hidden');
-            }
-        };
-
-        // Função para exibir as configurações da aplicação
-        window.showAppSettings = () => {
-            const adminContent = document.getElementById('admin-content');
-            if (!adminContent) {
-                console.error("Elemento 'admin-content' não encontrado em showAppSettings.");
-                return;
-            }
-            adminContent.innerHTML = `
-                <h3 class="text-xl font-bold text-gray-800 mb-4">Configurações da Aplicação</h3>
-                <div class="bg-white p-6 rounded-lg shadow-inner text-left">
-                    <div class="mb-4">
-                        <label for="welcome-message-input" class="block text-gray-700 text-sm font-bold mb-2">Mensagem de Boas-vindas:</label>
-                        <textarea id="welcome-message-input" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-500">${appSettings.welcomeMessage}</textarea>
-                    </div>
-                    <div class="mb-4">
-                        <label for="default-chat-message-input" class="block text-gray-700 text-sm font-bold mb-2">Mensagem Padrão do Chat:</label>
-                        <input type="text" id="default-chat-message-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-500" value="${appSettings.defaultChatMessage}">
-                    </div>
-                    <div class="mb-4 flex items-center">
-                        <input type="checkbox" id="allow-anonymous-posting-checkbox" class="mr-2 leading-tight" ${appSettings.allowAnonymousPosting ? 'checked' : ''}>
-                        <label for="allow-anonymous-posting-checkbox" class="text-sm text-gray-700">Permitir Postagens de Anônimos (Atenção: Requer ajuste nas Regras do Firestore)</label>
-                    </div>
-                    <div class="mb-4 flex items-center">
-                        <input type="checkbox" id="public-chat-enabled-checkbox" class="mr-2 leading-tight" ${appSettings.publicChatEnabled ? 'checked' : ''}>
-                        <label for="public-chat-enabled-checkbox" class="text-sm text-gray-700">Chat Público Ativado</label>
-                    </div>
-                    <div class="mb-6 flex items-center">
-                        <input type="checkbox" id="maintenance-mode-checkbox" class="mr-2 leading-tight" ${appSettings.maintenanceMode ? 'checked' : ''}>
-                        <label for="maintenance-mode-checkbox" class="text-sm text-gray-700">Modo de Manutenção (Desabilita interações)</label>
-                    </div>
-                    <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300 mr-2" onclick="window.saveAppSettings()">
-                        Salvar Configurações
-                    </button>
-                    <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg" onclick="window.loadAdminDashboard()">Voltar</button>
-                </div>
-            `;
-        };
-
-        // Função para salvar as configurações da aplicação (simulado)
-        window.saveAppSettings = () => {
-            const welcomeMessageInput = document.getElementById('welcome-message-input');
-            const defaultChatMessageInput = document.getElementById('default-chat-message-input');
-            const allowAnonymousPostingCheckbox = document.getElementById('allow-anonymous-posting-checkbox');
-            const publicChatEnabledCheckbox = document.getElementById('public-chat-enabled-checkbox');
-            const maintenanceModeCheckbox = document.getElementById('maintenance-mode-checkbox');
-
-            if (welcomeMessageInput) appSettings.welcomeMessage = welcomeMessageInput.value;
-            if (defaultChatMessageInput) appSettings.defaultChatMessage = defaultChatMessageInput.value;
-            if (allowAnonymousPostingCheckbox) appSettings.allowAnonymousPosting = allowAnonymousPostingCheckbox.checked;
-            if (publicChatEnabledCheckbox) appSettings.publicChatEnabled = publicChatEnabledCheckbox.checked;
-            if (maintenanceModeCheckbox) appSettings.maintenanceMode = maintenanceModeCheckbox.checked;
-
-            showNotification("Configurações salvas (simulado)!", 'success');
-            console.log("Configurações salvas:", appSettings);
-
-            // Em um cenário real, você enviaria esses dados para o seu backend:
-            /*
-            const token_do_administrador = await auth.currentUser.getIdToken();
-            fetch('/api/admin/settings', {
-                method: 'POST', // ou PUT
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token_do_administrador}`
-                },
-                body: JSON.stringify(appSettings)
-            })
-            .then(response => response.json())
-            .then(data => {
-                showNotification("Configurações salvas com sucesso!", 'success');
-                console.log("Configurações salvas no backend:", data);
-            })
-            .catch(error => {
-                showNotification("Erro ao salvar configurações no backend.", 'error');
-                console.error("Erro ao salvar configurações:", error);
-            });
-            */
-        };
-
-
-        // Função para chamar a API Gemini para estudo bíblico
-        // Protege a chave Gemini em produção (exemplo didático)
-        const GEMINI_API_KEY = "AIzaSyAXSNFBenSCk7wWscAafWILt45vok8cnMU"; // Chave de API do Gemini fornecida pelo usuário
-        const generateBibleStudy = async () => {
-            const bibleQuestionInput = document.getElementById('bible-question-input');
-            const bibleResponseArea = document.getElementById('bible-response-area');
-            const bibleLoadingIndicator = document.getElementById('bible-loading-indicator');
-            const question = bibleQuestionInput.value.trim();
-
-            if (!question) {
-                showNotification("Por favor, digite sua pergunta sobre a Bíblia.", 'error');
-                return;
-            }
-
-            bibleResponseArea.textContent = '';
-            showGlobalLoading(true);
-            if (bibleLoadingIndicator) bibleLoadingIndicator.classList.remove('hidden');
-
-            try {
-                const prompt = `Explique o seguinte conceito ou versículo bíblico de forma clara e concisa, baseando-se em conhecimento bíblico: "${question}".`;
-                let chatHistory = [];
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = { contents: chatHistory };
-                const apiKey = GEMINI_API_KEY;
-                if (!apiKey) throw new Error("Chave Gemini não definida. Configure window.GEMINI_API_KEY.");
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    if (bibleResponseArea) bibleResponseArea.textContent = text;
-                    showNotification("Estudo bíblico gerado!", 'success');
-                } else {
-                    if (bibleResponseArea) bibleResponseArea.textContent = "Não foi possível gerar uma resposta. Tente novamente.";
-                    showNotification("Erro ao gerar estudo bíblico.", 'error');
-                    console.error("Estrutura de resposta da API Gemini inesperada:", result);
-                }
-            } catch (error) {
-                if (bibleResponseArea) bibleResponseArea.textContent = "Ocorreu um erro ao conectar com a IA. Tente novamente mais tarde.";
-                showNotification("Erro na conexão com a IA.", 'error');
-                console.error("Erro na chamada da API Gemini:", error);
-            } finally {
-                if (bibleLoadingIndicator) bibleLoadingIndicator.classList.add('hidden');
-                showGlobalLoading(false);
-            }
-        };
-
-        // Função para buscar versículos bíblicos usando a API da Bíblia Digital
-        const fetchBibleVerse = async () => {
-            const bookSelect = document.getElementById('bible-book-select');
-            const versionSelect = document.getElementById('bible-version-select'); // Novo select de versão
-            const chapterInput = document.getElementById('bible-chapter-input');
-            const versesInput = document.getElementById('bible-verses-input');
-            const bibleVerseDisplayArea = document.getElementById('bible-verse-display-area');
-            const bibleVerseLoadingIndicator = document.getElementById('bible-verse-loading-indicator');
-
-            if (!bookSelect || !versionSelect || !chapterInput || !versesInput || !bibleVerseDisplayArea || !bibleVerseLoadingIndicator) return;
-
-
-            const selectedBookAbbrevPt = bookSelect.value.trim();
-            const selectedVersion = versionSelect.value.trim(); // Obtém a versão selecionada
-            const chapterNumber = chapterInput.value.trim();
-            const versesRange = versesInput.value.trim();
-
-
-            if (!selectedBookAbbrevPt || !chapterNumber || !selectedVersion) {
-                showNotification("Por favor, selecione um livro, uma versão e insira o capítulo.", 'error');
-                return;
-            }
-
-            bibleVerseDisplayArea.innerHTML = '';
-            bibleVerseLoadingIndicator.classList.remove('hidden');
-
-            let apiUrl = `https://www.abibliadigital.com.br/api/verses/${selectedVersion}/${selectedBookAbbrevPt}/${chapterNumber}`;
-            
-            if (versesRange && !versesRange.includes('-')) {
-                apiUrl += `/${versesRange}`;
-            }
-
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                if (response.ok && data.verses && data.verses.length > 0) {
-                    let versesToDisplay = data.verses;
-                    
-                    if (versesRange && versesRange.includes('-')) {
-                        const [startVerse, endVerse] = versesRange.split('-').map(Number);
-                        versesToDisplay = data.verses.filter(verse => verse.number >= startVerse && verse.number <= endVerse);
-                    } else if (versesRange && !isNaN(Number(versesRange))) {
-                        versesToDisplay = data.verses.filter(verse => verse.number === Number(versesRange));
-                    }
-
-                    if (versesToDisplay.length > 0) {
-                        let formattedOutput = `
-                            <h4 class="text-lg font-bold text-gray-800 mb-2">${data.book.name} ${data.chapter.number} (${data.version})</h4>
-                        `;
-                        versesToDisplay.forEach(verse => {
-                            formattedOutput += `<p class="mb-1"><span class="font-semibold">${verse.number}.</span> ${verse.text}</p>`;
-                        });
-                        bibleVerseDisplayArea.innerHTML = formattedOutput;
-                        showNotification("Versículo(s) encontrado(s)!", 'success');
-                    } else {
-                         bibleVerseDisplayArea.innerHTML = `<p class="text-red-500">Versículo(s) não encontrado(s) no capítulo especificado. Verifique o intervalo.</p>`;
-                         showNotification("Versículo(s) não encontrado(s).", 'error');
-                    }
-                } else {
-                    bibleVerseDisplayArea.innerHTML = `<p class="text-red-500">Não foi possível encontrar o versículo. Verifique o livro, capítulo e versão.</p>`;
-                    showNotification("Versículo(s) não encontrado(s).", 'error');
-                    console.error("Erro na resposta da API da Bíblia:", data);
-                }
-            } catch (error) {
-                bibleVerseDisplayArea.innerHTML = `<p class="text-red-500">Ocorreu um erro ao buscar o versículo. Verifique sua conexão ou tente novamente mais tarde.</p>`;
-                showNotification("Erro na conexão com a API da Bíblia.", 'error');
-                console.error("Erro na chamada da API da Bíblia:", error);
-            } finally {
-                bibleVerseLoadingIndicator.classList.add('hidden');
-            }
-        };
-
-        // Função para buscar versículos da Bíblia por palavra-chave
-        const searchBibleVerses = async () => {
-            const searchInput = document.getElementById('bible-search-input');
-            const versionSelect = document.getElementById('bible-version-select');
-            const searchResultsArea = document.getElementById('bible-search-results-area');
-            const searchLoadingIndicator = document.getElementById('bible-search-loading-indicator');
-
-            if (!searchInput || !versionSelect || !searchResultsArea || !searchLoadingIndicator) return;
-
-            const searchTerm = searchInput.value.trim();
-            const selectedVersion = versionSelect.value;
-
-            if (!searchTerm || !selectedVersion) {
-                showNotification("Por favor, digite uma palavra-chave e selecione uma versão.", 'error');
-                return;
-            }
-
-            searchResultsArea.innerHTML = '';
-            searchLoadingIndicator.classList.remove('hidden');
-
-            const apiUrl = `https://www.abibliadigital.com.br/api/verses/search`;
-            const payload = {
-                version: selectedVersion,
-                search: searchTerm
-            };
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.verses && data.verses.length > 0) {
-                    let formattedOutput = `
-                        <h4 class="text-lg font-bold text-gray-800 mb-2">Resultados da Busca para "${searchTerm}" (${data.occurrence} ocorrências na versão ${data.version})</h4>
-                    `;
-                    data.verses.forEach(verse => {
-                        formattedOutput += `
-                            <p class="mb-1">
-                                <span class="font-semibold">${verse.book.name} ${verse.chapter}:${verse.number}.</span> ${verse.text}
-                            </p>
-                        `;
-                    });
-                    searchResultsArea.innerHTML = formattedOutput;
-                    showNotification(`${data.occurrence} versículo(s) encontrado(s)!`, 'success');
-                } else {
-                    searchResultsArea.innerHTML = `<p class="text-red-500">Nenhum versículo encontrado para "${searchTerm}" na versão selecionada.</p>`;
-                    showNotification("Nenhum resultado encontrado.", 'info');
-                    console.warn("Nenhum resultado ou erro na busca da API da Bíblia:", data);
-                }
-            } catch (error) {
-                searchResultsArea.innerHTML = `<p class="text-red-500">Ocorreu um erro ao buscar versículos. Verifique sua conexão ou tente novamente mais tarde.</p>`;
-                showNotification("Erro na conexão com a API de Busca da Bíblia.", 'error');
-                console.error("Erro na chamada da API de Busca da Bíblia:", error);
-            } finally {
-                searchLoadingIndicator.classList.add('hidden');
-            }
-        };
-
-
-        // Função para popular o dropdown de livros da Bíblia
-        const populateBibleBooksDropdown = () => {
-            const bookSelect = document.getElementById('bible-book-select');
-            if (bookSelect) {
-                // Adiciona uma opção padrão
-                let defaultOption = document.createElement('option');
-                defaultOption.value = "";
-                defaultOption.textContent = "Selecione um livro";
-                defaultOption.disabled = true;
-                defaultOption.selected = true;
-                bookSelect.appendChild(defaultOption);
-
-                bibleBooks.forEach(book => {
-                    let option = document.createElement('option');
-                    // Usar a abreviação em português para a API abibliadigital.com.br
-                    option.value = book.abbrev.pt; 
-                    option.textContent = book.name;
-                    bookSelect.appendChild(option);
-                });
-
-                // Pre-seleciona Gênesis (gn) no dropdown e capítulo 1
-                bookSelect.value = "gn"; 
-                const bibleChapterInput = document.getElementById('bible-chapter-input');
-                if (bibleChapterInput) bibleChapterInput.value = "1";
-            }
-        };
-
-        // Função para popular o dropdown de versões da Bíblia
-        const populateBibleVersionsDropdown = () => {
-            const versionSelect = document.getElementById('bible-version-select');
-            if (versionSelect) {
-                let defaultOption = document.createElement('option');
-                defaultOption.value = "";
-                defaultOption.textContent = "Selecione uma versão";
-                defaultOption.disabled = true;
-                defaultOption.selected = true;
-                versionSelect.appendChild(defaultOption);
-
-                bibleVersions.forEach(version => {
-                    let option = document.createElement('option');
-                    option.value = version.version;
-                    option.textContent = version.version.toUpperCase(); // Exibe a abreviação em maiúsculas
-                    versionSelect.appendChild(option);
-                });
-
-                // Pre-seleciona a versão NVI, se disponível
-                versionSelect.value = "nvi";
-            }
-        };
-
-        // Função para gerar uma oração personalizada usando a API Gemini
-        const generatePrayer = async () => {
-            const prayerTopicInput = document.getElementById('prayer-topic-input');
-            const prayerResponseArea = document.getElementById('prayer-response-area');
-            const prayerLoadingIndicator = document.getElementById('prayer-loading-indicator');
-            const topic = prayerTopicInput.value.trim();
-
-            if (!topic) {
-                showNotification("Por favor, descreva o tema da sua oração.", 'error');
-                return;
-            }
-
-            if (!prayerResponseArea || !prayerLoadingIndicator) return;
-
-            prayerResponseArea.textContent = ''; // Limpa a área de resposta
-            prayerLoadingIndicator.classList.remove('hidden'); // Mostra o indicador de carregamento
-
-            showGlobalLoading(true);
-            try {
-                const prompt = `Gere uma oração inspiradora e relevante sobre o seguinte tema: "${topic}". Mantenha a oração com cerca de 50-100 palavras.`;
-                let chatHistory = [];
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = { contents: chatHistory };
-                const apiKey = "AIzaSyAXSNFBenSCk7wWscAafWILt45vok8cnMU"; // Chave de API do Gemini fornecida pelo usuário
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    prayerResponseArea.textContent = text;
-                    showNotification("Oração gerada com sucesso!", 'success');
-                } else {
-                    prayerResponseArea.textContent = "Não foi possível gerar a oração. Tente novamente.";
-                    showNotification("Erro ao gerar oração.", 'error');
-                    console.error("Estrutura de resposta da API Gemini inesperada para oração:", result);
-                }
-            } catch (error) {
-                prayerResponseArea.textContent = "Ocorreu um erro ao conectar com a IA para gerar a oração. Tente novamente mais tarde.";
-                showNotification("Erro na conexão com a IA para oração.", 'error');
-                console.error("Erro na chamada da API Gemini para oração:", error);
-            } finally {
-                prayerLoadingIndicator.classList.add('hidden'); // Esconde o indicador de carregamento
-            }
-        };
-
-
+        // Adiciona listeners ao carregar o DOM
         document.addEventListener('DOMContentLoaded', () => {
-            // Exibe um loading global na tela
-            function showGlobalLoading(show) {
-                let loadingDiv = document.getElementById('global-loading-indicator');
-                if (!loadingDiv) {
-                    loadingDiv = document.createElement('div');
-                    loadingDiv.id = 'global-loading-indicator';
-                    loadingDiv.style.position = 'fixed';
-                    loadingDiv.style.top = '0';
-                    loadingDiv.style.left = '0';
-                    loadingDiv.style.width = '100vw';
-                    loadingDiv.style.height = '100vh';
-                    loadingDiv.style.background = 'rgba(0,0,0,0.3)';
-                    loadingDiv.style.display = 'flex';
-                    loadingDiv.style.alignItems = 'center';
-                    loadingDiv.style.justifyContent = 'center';
-                    loadingDiv.style.zIndex = '9999';
-                    loadingDiv.innerHTML = '<div style="background:#fff;padding:32px 48px;border-radius:16px;box-shadow:0 2px 16px #0002;font-size:1.2rem;font-weight:bold;">Carregando...</div>';
-                    document.body.appendChild(loadingDiv);
-                }
-                loadingDiv.style.display = show ? 'flex' : 'none';
+            // Segurança: Força todos os links externos a terem rel="noopener noreferrer" e target="_blank"
+            document.querySelectorAll('a[href^="http"]').forEach(link => {
+                link.setAttribute('rel', 'noopener noreferrer');
+                link.setAttribute('target', '_blank');
+            });
+
+            // Acessibilidade: foco automático em modais
+            const authModal = document.getElementById('auth-modal');
+            const usernameModal = document.getElementById('username-modal');
+            if (authModal) {
+                authModal.addEventListener('transitionend', () => {
+                    if (!authModal.classList.contains('hidden')) {
+                        const firstInput = authModal.querySelector('input, button, select, textarea');
+                        if (firstInput) firstInput.focus();
+                    }
+                });
             }
-            // Adiciona listeners com verificações de existência
-            // DICA DE SEGURANÇA: Defina window.GEMINI_API_KEY em ambiente seguro para produção.
+            if (usernameModal) {
+                usernameModal.addEventListener('transitionend', () => {
+                    if (!usernameModal.classList.contains('hidden')) {
+                        const firstInput = usernameModal.querySelector('input, button');
+                        if (firstInput) firstInput.focus();
+                    }
+                });
+            }
+            // Fecha modais com ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (authModal && !authModal.classList.contains('hidden')) {
+                        authModal.classList.add('hidden');
+                    }
+                    if (usernameModal && !usernameModal.classList.contains('hidden')) {
+                        usernameModal.classList.add('hidden');
+                    }
+                }
+            });
+
+            // Desabilita botões durante loading
             const floatingSendMessageButton = document.getElementById('floating-send-message-button');
             if (floatingSendMessageButton) {
-                floatingSendMessageButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    sendMessage();
+                floatingSendMessageButton.addEventListener('click', async (e) => {
+                    floatingSendMessageButton.disabled = true;
+                    await sendMessage();
+                    floatingSendMessageButton.disabled = false;
                 });
-                floatingSendMessageButton.setAttribute('aria-label', 'Enviar mensagem no chat');
-                floatingSendMessageButton.setAttribute('tabindex', '0');
             }
-
             const addPostButton = document.getElementById('add-post-button');
             if (addPostButton) {
-                addPostButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    addPost();
+                addPostButton.addEventListener('click', async (e) => {
+                    addPostButton.disabled = true;
+                    await addPost();
+                    addPostButton.disabled = false;
                 });
-                addPostButton.setAttribute('aria-label', 'Publicar post');
-                addPostButton.setAttribute('tabindex', '0');
             }
+            // Inicializa Firebase
+            initFirebase();
 
-            const adminButton = document.getElementById('admin-button');
-            if (adminButton) {
-                adminButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.handleAdminClick();
-                });
-                adminButton.setAttribute('aria-label', 'Abrir painel de administração');
-                adminButton.setAttribute('tabindex', '0');
-            }
+            // Esconde a mensagem de carregamento e mostra o conteúdo principal
+            document.getElementById('loading-message')?.classList.add('hidden');
+            document.getElementById('app-content')?.classList.remove('hidden');
+            document.getElementById('main-header')?.classList.remove('hidden');
+            document.getElementById('toggle-floating-chat-button')?.classList.remove('hidden');
+            document.getElementById('main-footer')?.classList.remove('hidden');
 
-            // Adicionado listener para o novo botão da Bíblia
-            const bibleButton = document.getElementById('bible-button');
-            if (bibleButton) {
-                bibleButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.handleBibleClick();
-                });
-                bibleButton.setAttribute('aria-label', 'Abrir tela da Bíblia');
-                bibleButton.setAttribute('tabindex', '0');
-            }
+            // Event Listeners para o Cabeçalho e Menu Hambúrguer
+            document.getElementById('hamburger-icon')?.addEventListener('click', toggleHamburgerMenu);
+            document.getElementById('close-hamburger-menu')?.addEventListener('click', toggleHamburgerMenu);
+            document.getElementById('hamburger-menu-overlay')?.addEventListener('click', toggleHamburgerMenu);
 
-            const toggleFloatingChatButton = document.getElementById('toggle-floating-chat-button');
-            if (toggleFloatingChatButton) {
-                toggleFloatingChatButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.toggleFloatingChat();
-                });
-                toggleFloatingChatButton.setAttribute('aria-label', 'Abrir ou fechar chat flutuante');
-                toggleFloatingChatButton.setAttribute('tabindex', '0');
-            }
+            // Event Listeners para o Chat Flutuante
+            document.getElementById('toggle-floating-chat-button')?.addEventListener('click', toggleFloatingChat);
+            document.getElementById('close-floating-chat-button')?.addEventListener('click', toggleFloatingChat);
+            document.getElementById('floating-send-message-button')?.addEventListener('click', sendMessage);
 
-            const closeFloatingChatButton = document.getElementById('close-floating-chat-button');
-            if (closeFloatingChatButton) {
-                closeFloatingChatButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.toggleFloatingChat();
-                });
-                closeFloatingChatButton.setAttribute('aria-label', 'Fechar chat flutuante');
-                closeFloatingChatButton.setAttribute('tabindex', '0');
-            }
+            // Event Listeners para Posts
+            document.getElementById('add-post-button')?.addEventListener('click', addPost);
 
-            const loginButton = document.getElementById('login-button');
-            if (loginButton) {
-                loginButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.toggleAuthModal(true); // Chamada corrigida
-                });
-                loginButton.setAttribute('aria-label', 'Abrir modal de login');
-                loginButton.setAttribute('tabindex', '0');
-            }
+            // Event Listeners para o Modal de Autenticação
+            document.getElementById('menu-login-button')?.addEventListener('click', () => toggleAuthModal(true));
+            document.getElementById('close-auth-modal-button')?.addEventListener('click', () => toggleAuthModal(false));
+            document.getElementById('show-register-form-button')?.addEventListener('click', showRegisterForm);
+            document.getElementById('show-login-form-button')?.addEventListener('click', showLoginForm);
+            document.getElementById('anonymous-login-button')?.addEventListener('click', signInAnonymouslyUser);
+            document.getElementById('login-form')?.addEventListener('submit', handleLogin);
+            document.getElementById('register-form')?.addEventListener('submit', handleRegister);
 
-            const logoutButton = document.getElementById('logout-button');
-            if (logoutButton) {
-                logoutButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    handleLogout();
-                });
-                logoutButton.setAttribute('aria-label', 'Fazer logout');
-                logoutButton.setAttribute('tabindex', '0');
-            }
-
-            const closeAuthModalButton = document.getElementById('close-auth-modal-button');
-            if (closeAuthModalButton) closeAuthModalButton.addEventListener('click', () => window.toggleAuthModal(false)); // Chamada corrigida
-
-            const showRegisterFormButton = document.getElementById('show-register-form-button');
-            if (showRegisterFormButton) showRegisterFormButton.addEventListener('click', showRegisterForm);
-
-            const showLoginFormButton = document.getElementById('show-login-form-button');
-            if (showLoginFormButton) showLoginFormButton.addEventListener('click', showLoginForm);
-
-            const anonymousLoginButton = document.getElementById('anonymous-login-button');
-            if (anonymousLoginButton) anonymousLoginButton.addEventListener('click', signInAnonymouslyUser);
-
-            const loginForm = document.getElementById('login-form');
-            if (loginForm) loginForm.addEventListener('submit', handleLogin);
-
-            const registerForm = document.getElementById('register-form');
-            if (registerForm) registerForm.addEventListener('submit', handleRegister);
-
-            const closeAdminScreenButton = document.getElementById('close-admin-screen-button');
-            if (closeAdminScreenButton) closeAdminScreenButton.addEventListener('click', window.toggleAdminScreen);
-
-            const saveAnonymousUsernameButton = document.getElementById('save-anonymous-username-button');
-            if (saveAnonymousUsernameButton) saveAnonymousUsernameButton.addEventListener('click', saveAnonymousUsername);
-
-            const closeUsernameModalButton = document.getElementById('close-username-modal-button');
-            if (closeUsernameModalButton) closeUsernameModalButton.addEventListener('click', () => {
-                const usernameModal = document.getElementById('username-modal');
-                const anonymousUsernameInput = document.getElementById('anonymous-username-input');
-                if (usernameModal) usernameModal.classList.add('hidden');
-                if (anonymousUsernameInput) anonymousUsernameInput.value = '';
+            // Event Listeners para o Modal de Nome de Usuário Anônimo
+            document.getElementById('save-anonymous-username-button')?.addEventListener('click', saveAnonymousUsername);
+            document.getElementById('close-username-modal-button')?.addEventListener('click', () => {
+                document.getElementById('username-modal')?.classList.add('hidden');
+                document.getElementById('anonymous-username-input').value = '';
             });
 
-            const generateBibleStudyButton = document.getElementById('generate-bible-study-button');
-            if (generateBibleStudyButton) generateBibleStudyButton.addEventListener('click', generateBibleStudy);
-
-            const fetchBibleVerseButton = document.getElementById('fetch-bible-verse-button');
-            if (fetchBibleVerseButton) fetchBibleVerseButton.addEventListener('click', fetchBibleVerse);
-
-            const searchBibleButton = document.getElementById('search-bible-button');
-            if (searchBibleButton) searchBibleButton.addEventListener('click', searchBibleVerses);
-
-            const generatePrayerButton = document.getElementById('generate-prayer-button');
-            if (generatePrayerButton) generatePrayerButton.addEventListener('click', generatePrayer);
-
-
-            // Popula os dropdowns ao carregar a página
-            populateBibleBooksDropdown();
-            populateBibleVersionsDropdown(); 
-
-            initFirebase();
+            // Event Listener para o botão de Logout no menu hambúrguer
+            document.getElementById('menu-logout-button')?.addEventListener('click', handleLogout);
         });
     </script>
 </body>

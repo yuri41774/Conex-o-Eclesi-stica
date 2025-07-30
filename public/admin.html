@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conexão Eclesiástica - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            background-color: #f3f4f6; /* bg-gray-100 */
+            padding: 1rem;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #6366f1;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hidden { display: none; }
+        .notification-transition { transition: opacity 0.5s ease-in-out; }
+        #notification-bar {
+            position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 400px; background-color: #4CAF50;
+            color: white; text-align: center; padding: 0.75rem;
+            border-bottom-left-radius: 0.5rem; border-bottom-right-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); z-index: 1000;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-100 flex flex-col items-center justify-start p-4">
+
+    <div id="notification-bar" class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-green-500 text-white text-center py-3 rounded-b-lg shadow-lg z-50 opacity-0 notification-transition hidden">
+        </div>
+
+    <div class="w-full max-w-4xl bg-white rounded-xl shadow-2xl p-8 text-center relative">
+        <h2 class="text-3xl font-bold text-center text-orange-600 mb-6">Painel de Administração</h2>
+
+        <div id="admin-content" class="text-center">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Visão Geral do Administrador</h3>
+            <p class="text-gray-700">Bem-vindo ao painel de administração. Selecione uma opção para gerenciar:</p>
+            <ul class="mt-4 space-y-2 text-left">
+                <li><button class="text-blue-600 hover:underline" id="manage-users-button">Gerenciar Usuários</button></li>
+                <li><button class="text-blue-600 hover:underline" id="manage-posts-button">Gerenciar Posts</button></li>
+                <li><button class="text-blue-600 hover:underline" id="app-settings-button">Configurações da Aplicação</button></li>
+            </ul>
+            <a href="index.html" class="mt-8 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg inline-block">Voltar para o Início</a>
+        </div>
+    </div>
+
+    <script type="module">
+        // --- SEGURANÇA: Função para sanitizar entradas (básico contra XSS) ---
+        function sanitizeInput(str) {
+            if (typeof str !== 'string') return '';
+            return str.replace(/[&<>"'/]/g, function (c) {
+                return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;','/':'&#x2F;'}[c]);
+            });
+        }
+        // Importa módulos necessários do Firebase (se for gerenciar usuários/posts diretamente do admin)
+        // import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+        // import { getFirestore, collection, query, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+        // import { getAuth } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+        // Dados mock para configurações da aplicação (simulado, em um projeto real viriam do Firestore)
+        let appSettings = {
+            welcomeMessage: "Bem-vindo(a) à Conexão Eclesiástica! Que a paz de Deus esteja com você.",
+            defaultChatMessage: "Olá a todos! Compartilhem suas bênçãos e orações.",
+            allowAnonymousPosting: false,
+            publicChatEnabled: true,
+            maintenanceMode: false
+        };
+
+        const showNotification = (message, type = 'success') => {
+            const notificationBar = document.getElementById('notification-bar');
+            if (!notificationBar) return;
+
+            notificationBar.textContent = message;
+            notificationBar.classList.remove('hidden', 'bg-red-500', 'bg-green-500', 'bg-gray-700');
+
+            if (type === 'success') {
+                notificationBar.classList.add('bg-green-500');
+            } else if (type === 'error') {
+                notificationBar.classList.add('bg-red-500');
+            } else {
+                notificationBar.classList.add('bg-gray-700');
+            }
+
+            notificationBar.classList.remove('opacity-0');
+            notificationBar.classList.add('opacity-100');
+
+            setTimeout(() => {
+                notificationBar.classList.remove('opacity-100');
+                notificationBar.classList.add('opacity-0');
+                setTimeout(() => {
+                    notificationBar.classList.add('hidden');
+                }, 500);
+            }, 3000);
+        };
+
+        const loadAdminDashboard = () => {
+            const adminContent = document.getElementById('admin-content');
+            if (!adminContent) return;
+            // Recarrega o conteúdo inicial do dashboard
+            adminContent.innerHTML = `
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Visão Geral do Administrador</h3>
+                <p class="text-gray-700">Bem-vindo ao painel de administração. Selecione uma opção para gerenciar:</p>
+                <ul class="mt-4 space-y-2 text-left">
+                    <li><button class="text-blue-600 hover:underline" id="manage-users-button">Gerenciar Usuários</button></li>
+                    <li><button class="text-blue-600 hover:underline" id="manage-posts-button">Gerenciar Posts</button></li>
+                    <li><button class="text-blue-600 hover:underline" id="app-settings-button">Configurações da Aplicação</button></li>
+                </ul>
+                <a href="index.html" class="mt-8 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg inline-block">Voltar para o Início</a>
+            `;
+            attachAdminListeners(); // Reanexa os listeners
+        };
+
+        const showManageUsers = async () => {
+            const adminContent = document.getElementById('admin-content');
+            if (!adminContent) return;
+            adminContent.innerHTML = `
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Gerenciar Usuários</h3>
+                <div id="admin-users-loading" class="flex justify-center items-center py-4">
+                    <div class="spinner"></div>
+                    <p class="ml-2 text-gray-600">Carregando usuários...</p>
+                </div>
+                <div id="admin-users-table-container" class="overflow-x-auto"></div>
+                <button class="mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg" id="back-to-admin-dashboard">Voltar</button>
+            `;
+
+            const usersTableContainer = document.getElementById('admin-users-table-container');
+            const usersLoading = document.getElementById('admin-users-loading');
+            document.getElementById('back-to-admin-dashboard')?.addEventListener('click', loadAdminDashboard);
+
+            try {
+                if (usersLoading) usersLoading.classList.remove('hidden');
+                await new Promise(resolve => setTimeout(resolve, 1500)); 
+
+                const mockUsers = [
+                    { id: 'user123', name: 'João Silva', email: 'joao@example.com', token: 'eyJhbGciOiJIU...', notifications: true },
+                    { id: 'user456', name: 'Maria Souza', email: 'maria@example.com', token: 'eyJhbGciOiJIU...', notifications: false },
+                    { id: 'user789', name: 'Convidado_XYZ', email: 'anon1@example.com', token: 'eyJhbGciOiJIU...', notifications: true },
+                    { id: 'user012', name: 'Pedro Alves', email: 'pedro@example.com', token: 'eyJhbGciOiJIU...', notifications: true },
+                ];
+
+                let tableHtml = `
+                    <table class="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
+                        <thead class="bg-gray-200">
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">ID (truncado)</th>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Nome</th>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Email</th>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Token (truncado)</th>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Notificações</th>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                mockUsers.forEach(user => {
+                    tableHtml += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 border-b text-sm text-gray-800">${user.id.substring(0, 8)}...</td>
+                            <td class="py-2 px-4 border-b text-sm text-gray-800">${user.name}</td>
+                            <td class="py-2 px-4 border-b text-sm text-gray-800">${user.email}</td>
+                            <td class="py-2 px-4 border-b text-sm text-gray-800">${user.token.substring(0, 10)}...</td>
+                            <td class="py-2 px-4 border-b text-sm text-gray-800">${user.notifications ? 'Sim' : 'Não'}</td>
+                            <td class="py-2 px-4 border-b text-sm">
+                                <button class="bg-blue-500 text-white px-3 py-1 rounded-md text-xs hover:bg-blue-600 mr-1">Editar</button>
+                                <button class="bg-red-500 text-white px-3 py-1 rounded-md text-xs hover:bg-red-600">Excluir</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tableHtml += `
+                        </tbody>
+                    </table>
+                `;
+                if (usersTableContainer) usersTableContainer.innerHTML = tableHtml;
+                showNotification("Lista de usuários carregada!", 'success');
+
+            } catch (error) {
+                if (usersTableContainer) usersTableContainer.innerHTML = `<p class="text-red-500">Erro ao carregar usuários: ${error.message}</p>`;
+                showNotification("Erro ao carregar usuários.", 'error');
+                console.error("Erro ao gerenciar usuários:", error);
+            } finally {
+                if (usersLoading) usersLoading.classList.add('hidden');
+            }
+        };
+
+        const showManagePosts = async () => {
+            const adminContent = document.getElementById('admin-content');
+            if (!adminContent) return;
+            adminContent.innerHTML = `
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Gerenciar Posts</h3>
+                <div id="admin-posts-loading" class="flex justify-center items-center py-4">
+                    <div class="spinner"></div>
+                    <p class="ml-2 text-gray-600">Carregando posts...</p>
+                </div>
+                <div id="admin-posts-table-container" class="overflow-x-auto"></div>
+                <button class="mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg" id="back-to-admin-dashboard">Voltar</button>
+            `;
+
+            const postsTableContainer = document.getElementById('admin-posts-table-container');
+            const postsLoading = document.getElementById('admin-posts-loading');
+            document.getElementById('back-to-admin-dashboard')?.addEventListener('click', loadAdminDashboard);
+
+            try {
+                if (postsLoading) postsLoading.classList.remove('hidden');
+                await new Promise(resolve => setTimeout(resolve, 1500)); 
+
+                const mockPosts = [
+                    { id: 'postA1', author: 'João Silva', content: 'Que dia abençoado na igreja hoje!', timestamp: new Date().toLocaleString(), status: 'publicado' },
+                    { id: 'postB2', author: 'Maria Souza', content: 'Versículo do dia: Salmos 23:1', timestamp: new Date().toLocaleString(), status: 'publicado' },
+                    { id: 'postC3', author: 'Convidado_XYZ', content: 'Olá a todos!', timestamp: new Date().toLocaleString(), status: 'pendente' },
+                ];
+
+                let tableHtml = `
+                    <table class="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
+                        <thead class="bg-gray-200">
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">ID (truncado)</th>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Autor</th>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Conteúdo</th>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Data</th>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Status</th>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                mockPosts.forEach(post => {
+                    tableHtml += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-2 px-4 border-b text-sm text-gray-800">${post.id.substring(0, 8)}...</td>
+                            <td class="py-2 px-4 border-b text-sm text-gray-800">${post.author}</td>
+                            <td class="py-2 px-4 border-b text-sm text-gray-800 truncate max-w-xs">${post.content}</td>
+                            <td class="py-2 px-4 border-b text-sm text-gray-800">${post.timestamp}</td>
+                            <td class="py-2 px-4 border-b text-sm text-gray-800">${post.status}</td>
+                            <td class="py-2 px-4 border-b text-sm">
+                                <button class="bg-blue-500 text-white px-3 py-1 rounded-md text-xs hover:bg-blue-600 mr-1">Editar</button>
+                                <button class="bg-red-500 text-white px-3 py-1 rounded-md text-xs hover:bg-red-600">Excluir</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tableHtml += `
+                        </tbody>
+                    </table>
+                `;
+                if (postsTableContainer) postsTableContainer.innerHTML = tableHtml;
+                showNotification("Lista de posts carregada!", 'success');
+
+            } catch (error) {
+                if (postsTableContainer) postsTableContainer.innerHTML = `<p class="text-red-500">Erro ao carregar posts: ${error.message}</p>`;
+                showNotification("Erro ao carregar posts.", 'error');
+                console.error("Erro ao gerenciar posts:", error);
+            } finally {
+                if (postsLoading) postsLoading.classList.add('hidden');
+            }
+        };
+
+        const showAppSettings = () => {
+            const adminContent = document.getElementById('admin-content');
+            if (!adminContent) return;
+            adminContent.innerHTML = `
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Configurações da Aplicação</h3>
+                <div class="bg-white p-6 rounded-lg shadow-inner text-left">
+                    <div class="mb-4">
+                        <label for="welcome-message-input" class="block text-gray-700 text-sm font-bold mb-2">Mensagem de Boas-vindas:</label>
+                        <textarea id="welcome-message-input" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-500">${appSettings.welcomeMessage}</textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="default-chat-message-input" class="block text-gray-700 text-sm font-bold mb-2">Mensagem Padrão do Chat:</label>
+                        <input type="text" id="default-chat-message-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-purple-500" value="${appSettings.defaultChatMessage}">
+                    </div>
+                    <div class="mb-4 flex items-center">
+                        <input type="checkbox" id="allow-anonymous-posting-checkbox" class="mr-2 leading-tight" ${appSettings.allowAnonymousPosting ? 'checked' : ''}>
+                        <label for="allow-anonymous-posting-checkbox" class="text-sm text-gray-700">Permitir Postagens de Anônimos (Atenção: Requer ajuste nas Regras do Firestore)</label>
+                    </div>
+                    <div class="mb-4 flex items-center">
+                        <input type="checkbox" id="public-chat-enabled-checkbox" class="mr-2 leading-tight" ${appSettings.publicChatEnabled ? 'checked' : ''}>
+                        <label for="public-chat-enabled-checkbox" class="text-sm text-gray-700">Chat Público Ativado</label>
+                    </div>
+                    <div class="mb-6 flex items-center">
+                        <input type="checkbox" id="maintenance-mode-checkbox" class="mr-2 leading-tight" ${appSettings.maintenanceMode ? 'checked' : ''}>
+                        <label for="maintenance-mode-checkbox" class="text-sm text-gray-700">Modo de Manutenção (Desabilita interações)</label>
+                    </div>
+                    <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300 mr-2" id="save-app-settings-button">
+                        Salvar Configurações
+                    </button>
+                    <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg" id="back-to-admin-dashboard">Voltar</button>
+                </div>
+            `;
+            document.getElementById('save-app-settings-button')?.addEventListener('click', saveAppSettings);
+            document.getElementById('back-to-admin-dashboard')?.addEventListener('click', loadAdminDashboard);
+        };
+
+        const saveAppSettings = () => {
+            const welcomeMessageInput = document.getElementById('welcome-message-input');
+            const defaultChatMessageInput = document.getElementById('default-chat-message-input');
+            const allowAnonymousPostingCheckbox = document.getElementById('allow-anonymous-posting-checkbox');
+            const publicChatEnabledCheckbox = document.getElementById('public-chat-enabled-checkbox');
+            const maintenanceModeCheckbox = document.getElementById('maintenance-mode-checkbox');
+
+            if (welcomeMessageInput) appSettings.welcomeMessage = sanitizeInput(welcomeMessageInput.value);
+            if (defaultChatMessageInput) appSettings.defaultChatMessage = sanitizeInput(defaultChatMessageInput.value);
+            if (allowAnonymousPostingCheckbox) appSettings.allowAnonymousPosting = allowAnonymousPostingCheckbox.checked;
+            if (publicChatEnabledCheckbox) appSettings.publicChatEnabled = publicChatEnabledCheckbox.checked;
+            if (maintenanceModeCheckbox) appSettings.maintenanceMode = maintenanceModeCheckbox.checked;
+
+            showNotification("Configurações salvas (simulado)!", 'success');
+            console.log("Configurações salvas:", appSettings);
+        };
+
+        // Função para anexar todos os listeners relevantes para a tela de administração
+        const attachAdminListeners = () => {
+            document.getElementById('manage-users-button')?.addEventListener('click', showManageUsers);
+            document.getElementById('manage-posts-button')?.addEventListener('click', showManagePosts);
+            document.getElementById('app-settings-button')?.addEventListener('click', showAppSettings);
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Segurança: Força todos os links externos a terem rel="noopener noreferrer" e target="_blank"
+            document.querySelectorAll('a[href^="http"]').forEach(link => {
+                link.setAttribute('rel', 'noopener noreferrer');
+                link.setAttribute('target', '_blank');
+            });
+            attachAdminListeners();
+
+            // Acessibilidade: foco automático em modais e ESC para fechar modais
+            document.body.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    // Fecha qualquer modal aberto (exemplo: modais de configurações futuras)
+                    const modais = document.querySelectorAll('[role="dialog"]');
+                    modais.forEach(modal => {
+                        if (!modal.classList.contains('hidden')) {
+                            modal.classList.add('hidden');
+                        }
+                    });
+                }
+            });
+
+            // Exemplo: foco automático em modais (caso sejam implementados)
+            const observer = new MutationObserver(() => {
+                const modal = document.querySelector('[role="dialog"]:not(.hidden)');
+                if (modal) {
+                    const focusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                    if (focusable) focusable.focus();
+                }
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+
+            // Usabilidade: desabilitar botões durante loading (exemplo para botões de salvar)
+            document.body.addEventListener('click', function (e) {
+                const btn = e.target.closest('button');
+                if (btn && btn.id && btn.id.includes('save')) {
+                    btn.disabled = true;
+                    setTimeout(() => { btn.disabled = false; }, 2000); // Simula loading
+                }
+            });
+        });
+    </script>
+</body>
+</html>
