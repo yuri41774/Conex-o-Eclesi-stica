@@ -6,7 +6,8 @@ self.addEventListener('install', event => {
         '/index.html',
         '/admin.html',
         '/bible.html',
-        '/css/index.css',
+        '/profile.html',
+        '/global.css',
         '/img/logo.png',
         // Adicione outros arquivos importantes aqui
       ]);
