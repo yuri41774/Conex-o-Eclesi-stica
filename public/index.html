@@ -4,71 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conexão Eclesiástica - Início</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#f59e42">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Conexão Eclesiástica">
+    <link rel="apple-touch-icon" href="/img/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            display: block;
-        }
-        @keyframes fade-in-down {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fade-in-up {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-down { animation: fade-in-down 0.8s ease-out forwards; }
-        .animate-fade-in-up { animation: fade-in-up 0.8s ease-out forwards; animation-delay: 0.2s; }
-        .hidden { display: none; }
-        .notification-transition { transition: opacity 0.5s ease-in-out; }
-        .modal-overlay { background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); }
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #6366f1;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .hamburger-menu {
-            position: fixed; top: 0; right: 0; width: 256px; height: 100%;
-            background-color: #1f2937; transform: translateX(100%);
-            transition: transform 0.3s ease-in-out; z-index: 50;
-            box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2); padding: 1.5rem;
-            display: flex; flex-direction: column;
-        }
-        .hamburger-menu.open { transform: translateX(0); }
-        .hamburger-menu-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); z-index: 40; display: none;
-        }
-        .hamburger-menu-overlay.open { display: block; }
-    </style>
+    <link rel="stylesheet" href="/src/global.css">
 </head>
 <body class="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 p-4 relative">
 
     <div id="loading-message" class="flex items-center justify-center min-h-screen bg-gray-100 absolute inset-0 z-10">
-        <p class="text-xl text-gray-700">Carregando aplicação...</p>
+        <p class="text-lg sm:text-xl text-gray-700">Carregando aplicação...</p>
     </div>
 
     <div id="notification-bar" class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-green-500 text-white text-center py-3 rounded-b-lg shadow-lg z-50 opacity-0 notification-transition hidden">
         </div>
 
     <header id="main-header" class="w-full max-w-4xl mx-auto bg-orange-600 text-white p-4 rounded-xl shadow-lg flex justify-between items-center mb-4 z-20 animate-fade-in-down hidden">
-        <h1 class="text-3xl font-bold">Conexão Eclesiástica</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold">Conexão Eclesiástica</h1>
         <div class="flex items-center space-x-4">
             <div id="user-profile-header" class="flex items-center space-x-2">
-                <img id="profile-avatar" class="w-10 h-10 rounded-full border-2 border-white hidden" src="https://placehold.co/40x40/cccccc/000000?text=👤" alt="Avatar do Usuário">
-                <span id="user-name-display" class="text-lg font-semibold">Visitante</span>
+                <a id="profile-avatar-link" href="profile.html" title="Ver perfil" class="flex items-center group">
+                  <img id="profile-avatar" class="w-10 h-10 rounded-full border-2 border-white bg-gray-200 object-cover transition-all duration-200" src="https://placehold.co/40x40/cccccc/000000?text=👤" alt="Avatar do Usuário">
+                  <span class="ml-2 text-white text-base font-semibold group-hover:underline" id="user-name-display">Visitante</span>
+                </a>
+                <label for="avatar-upload" class="cursor-pointer" title="Alterar avatar">
+                  <input type="file" id="avatar-upload" accept="image/*" class="hidden" />
+                  <span class="inline-block text-xs text-gray-200 bg-gray-700 px-2 py-1 rounded hover:bg-orange-500">Trocar</span>
+                </label>
             </div>
-            
             <button id="hamburger-icon" class="flex flex-col justify-around w-8 h-8 bg-orange-700 p-1 rounded-md cursor-pointer">
                 <span class="block h-0.5 bg-white rounded-full"></span>
                 <span class="block h-0.5 bg-white rounded-full"></span>
@@ -112,28 +82,27 @@
     <div id="hamburger-menu-overlay" class="hamburger-menu-overlay"></div>
 
     <div id="app-content" class="hidden bg-white rounded-xl shadow-2xl p-8 w-full max-w-4xl mx-auto text-center">
-        <p class="text-xl text-gray-700 mb-8 animate-fade-in-up">
+        <p class="text-lg sm:text-xl text-gray-700 mb-6 sm:mb-8 animate-fade-in-up">
             Bem-vindo(a)! Sua plataforma de interação e estudo.
         </p>
 
-        <p class="text-sm text-gray-500 mb-6">
+        <p class="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
             Seu ID de Usuário: <span id="user-id-display" class="font-mono bg-gray-100 px-2 py-1 rounded-md text-purple-600 break-all"></span>
         </p>
 
-        <div class="mt-8 bg-blue-50 p-6 rounded-lg shadow-inner">
-            <h2 class="text-3xl font-bold text-blue-700 mb-4">Mural de Notícias e Posts</h2>
-            <div id="posts-container" class="h-64 overflow-y-auto border border-gray-300 rounded-lg p-4 mb-4 bg-white shadow-sm">
-                </div>
-            <div id="add-post-section" class="flex gap-2 hidden">
+        <div class="mt-4 sm:mt-8 bg-blue-50 p-3 sm:p-6 rounded-lg shadow-inner">
+            <h2 class="text-2xl sm:text-3xl font-bold text-blue-700 mb-2 sm:mb-4">Mural de Notícias e Posts</h2>
+            <div id="posts-container" class="h-48 sm:h-64 overflow-y-auto border border-gray-300 rounded-lg p-2 sm:p-4 mb-2 sm:mb-4 bg-white shadow-sm"></div>
+            <div id="add-post-section" class="flex flex-col sm:flex-row gap-2 hidden">
                 <textarea
                     id="new-post-content-textarea"
                     placeholder="Escreva seu post aqui..."
-                    rows="3"
-                    class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+                    rows="2"
+                    class="flex-grow p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y text-sm sm:text-base"
                 ></textarea>
                 <button
                     id="add-post-button"
-                    class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 ease-in-out shadow-md self-end"
+                    class="bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 ease-in-out shadow-md self-end text-sm sm:text-base"
                 >
                     Publicar
                 </button>
@@ -146,34 +115,33 @@
     </button>
 
     <div id="floating-chat-container" class="hidden fixed bottom-20 right-4 w-80 h-[400px] bg-white rounded-lg shadow-2xl flex flex-col z-40 overflow-hidden">
-        <div class="bg-purple-700 text-white p-3 flex justify-between items-center rounded-t-lg">
-            <h3 class="text-lg font-bold">Chat Rápida</h3>
+        <div class="bg-purple-700 text-white p-2 sm:p-3 flex justify-between items-center rounded-t-lg">
+            <h3 class="text-base sm:text-lg font-bold">Chat Rápida</h3>
             <button id="close-floating-chat-button" class="text-white hover:text-gray-200">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
-        <div id="floating-messages-container" class="flex-grow overflow-y-auto p-4 bg-gray-50">
-            </div>
-        <div class="p-4 border-t border-gray-200 flex gap-2">
+        <div id="floating-messages-container" class="flex-grow overflow-y-auto p-2 sm:p-4 bg-gray-50"></div>
+        <div class="p-2 sm:p-4 border-t border-gray-200 flex gap-2">
             <input
                 type="text"
                 id="floating-new-message-input"
                 placeholder="Digite sua mensagem..."
-                class="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                class="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm sm:text-base"
             />
             <button
                 id="floating-send-message-button"
-                class="bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-700 transition duration-300 ease-in-out shadow-md"
+                class="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold hover:bg-purple-700 transition duration-300 ease-in-out shadow-md text-sm sm:text-base"
             >
                 Enviar
             </button>
         </div>
     </div>
 
-    <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal-overlay">
-        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md relative">
+    <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal-overlay" tabindex="-1" aria-modal="true" role="dialog">
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl w-full max-w-md relative" tabindex="0">
             <button id="close-auth-modal-button" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -301,8 +269,8 @@
         </div>
     </div>
 
-    <div id="username-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal-overlay">
-        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm relative text-center">
+    <div id="username-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 modal-overlay" tabindex="-1" aria-modal="true" role="dialog">
+        <div class="modal-content bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm relative text-center" tabindex="0">
             <button id="close-username-modal-button" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -317,12 +285,69 @@
     </div>
 
     <footer id="main-footer" class="w-full max-w-4xl mx-auto bg-gray-800 text-white p-4 rounded-xl shadow-lg text-center mt-8 hidden">
-        <p class="text-sm">&copy; 2025 Conexão Eclesiástica. Todos os direitos reservados.</p>
-        <p class="text-xs mt-2">Desenvolvido com Fé e Tecnologia.</p>
+        <p class="text-xs sm:text-sm">&copy; 2025 Conexão Eclesiástica. Todos os direitos reservados.</p>
+        <p class="text-[10px] sm:text-xs mt-2">Desenvolvido com Fé e Tecnologia.</p>
+        <p class="text-[10px] sm:text-xs mt-2 opacity-70">Versão: 1.0.0</p>
     </footer>
 
     <script type="module">
-        // Importa os módulos necessários do Firebase
+        // --- UPLOAD DE AVATAR ---
+        async function uploadAvatar(file) {
+            if (!file || !userId) {
+                showNotification('Selecione uma imagem e faça login.', 'error');
+                return;
+            }
+            showGlobalLoading(true);
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('userId', userId);
+                // URL da Edge Function (ajuste conforme seu deploy Supabase)
+                const edgeUrl = 'https://db.rahhplphegvvdehrumyp.supabase.co/functions/v1/upload-avatar';
+                const response = await fetch(edgeUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || 'Erro desconhecido');
+                // Atualiza o avatar na interface
+                await fetchAndSetUserAvatar();
+                showNotification('Avatar atualizado com sucesso!', 'success');
+            } catch (err) {
+                showNotification('Erro ao enviar avatar: ' + err.message, 'error');
+            } finally {
+                showGlobalLoading(false);
+            }
+        }
+
+        // Busca o avatar do usuário no Supabase e atualiza a interface
+        async function fetchAndSetUserAvatar() {
+            if (!userId) return;
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('avatar_url, firstName, lastName, email')
+                    .eq('id', userId)
+                    .single();
+                const avatarUrl = data?.avatar_url || 'https://placehold.co/40x40/cccccc/000000?text=👤';
+                const avatarImg = document.getElementById('profile-avatar');
+                if (avatarImg) {
+                    avatarImg.src = avatarUrl;
+                }
+                // Atualiza nome e e-mail no header
+                const userNameDisplay = document.getElementById('user-name-display');
+                if (userNameDisplay) {
+                    let displayName = data?.firstName || userName || 'Usuário';
+                    if (data?.lastName) displayName += ' ' + data.lastName;
+                    userNameDisplay.textContent = displayName;
+                }
+            } catch (e) {
+                const avatarImg = document.getElementById('profile-avatar');
+                if (avatarImg) {
+                    avatarImg.src = 'https://placehold.co/40x40/cccccc/000000?text=👤';
+                }
+            }
+        }
         // --- SEGURANÇA: Função para sanitizar entradas (básico contra XSS) ---
         function sanitizeInput(str) {
             if (typeof str !== 'string') return '';
@@ -330,32 +355,15 @@
                 return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;','/':'&#x2F;'}[c]);
             });
         }
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-        // Variáveis globais para Firebase e dados do usuário
-        let db;
-        let auth;
+        // --- SUPABASE CONFIG ---
+        const supabaseUrl = 'https://db.rahhplphegvvdehrumyp.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhaGhwbHBoZWd2dmRlaHJ1bXlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3MDk2NDMsImV4cCI6MjA2NjI4NTY0M30.EDM-RotlChTCWiisI4o5okQ6Llee1ZaQEAcLaphBqTs';
+        const supabase = window.createClient(supabaseUrl, supabaseKey);
         let userId = null;
-        let userName = null; // Novo para armazenar o nome do usuário
+        let userName = null;
         let isAuthReady = false;
-        let analytics;
-
-        // Configurações do Firebase (fornecidas pelo usuário)
-        const firebaseConfig = {
-            apiKey: "AIzaSyBfFQ0wZIe1WY0Lw3L0Rlr97UrnnSydurM", // Chave de API do Firebase
-            authDomain: "conexao-eclesiastica.firebaseapp.com",
-            databaseURL: "https://conexao-eclesiastica-default-rtdb.firebaseio.com", // Adicionado
-            projectId: "conexao-eclesiastica",
-            storageBucket: "conexao-eclesiastica.firebasestorage.app",
-            messagingSenderId: "1009771043961",
-            appId: "1:1009771043961:web:6a8d829618f0b0f8a508a8",
-            measurementId: "G-W0701VYFK9"
-        };
-        const appId = firebaseConfig.appId;
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        const appId = 'conexao-eclesiastica';
 
         // Dados mock para configurações da aplicação (apenas para simulação, em um projeto real viriam do Firestore)
         let appSettings = {
@@ -388,172 +396,103 @@
             loadingDiv.style.display = show ? 'flex' : 'none';
         }
 
-        // Função para inicializar o Firebase e configurar a autenticação
-        const initFirebase = async () => {
-            try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-                analytics = getAnalytics(app);
-
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        userId = user.uid;
-                        console.log("Usuário autenticado:", userId);
-
-                        const userProfileRef = doc(db, `artifacts/${appId}/users/${userId}/profile`, 'details');
-                        const userProfileSnap = await getDoc(userProfileRef);
-                        if (userProfileSnap.exists() && userProfileSnap.data().firstName) {
-                            userName = userProfileSnap.data().firstName;
-                            document.getElementById('user-name-display').textContent = userName;
-                            document.getElementById('profile-avatar').classList.remove('hidden');
-                            document.getElementById('user-id-display').textContent = `${userName} (${userId.substring(0, 8)}...)`;
-                        } else {
-                            userName = null;
-                            document.getElementById('user-name-display').textContent = user.isAnonymous ? 'Convidado' : 'Usuário';
-                            document.getElementById('profile-avatar').classList.add('hidden');
-                            document.getElementById('user-id-display').textContent = user.isAnonymous ? `${userId} (Anônimo)` : userId;
-                        }
-                        
-                        const addPostSection = document.getElementById('add-post-section');
-                        if (addPostSection) {
-                            if (user.isAnonymous) {
-                                addPostSection.classList.add('hidden');
-                            } else {
-                                addPostSection.classList.remove('hidden');
-                            }
-                        }
-
-                        const menuLoginItem = document.getElementById('menu-login-item');
-                        const menuLogoutItem = document.getElementById('menu-logout-item');
-                        if (menuLoginItem) menuLoginItem.classList.add('hidden');
-                        if (menuLogoutItem) menuLogoutItem.classList.remove('hidden');
-
-                    } else {
-                        userId = null;
-                        userName = null;
-                        console.log("Usuário não autenticado.");
-                        const userIdDisplay = document.getElementById('user-id-display');
-                        if (userIdDisplay) userIdDisplay.textContent = 'Não disponível';
-                        const userNameDisplay = document.getElementById('user-name-display');
-                        if (userNameDisplay) userNameDisplay.textContent = 'Visitante';
-                        const profileAvatar = document.getElementById('profile-avatar');
-                        if (profileAvatar) profileAvatar.classList.add('hidden');
-                        
-                        const addPostSection = document.getElementById('add-post-section');
-                        if (addPostSection) addPostSection.classList.add('hidden');
-
-                        const menuLoginItem = document.getElementById('menu-login-item');
-                        const menuLogoutItem = document.getElementById('menu-logout-item');
-                        if (menuLoginItem) menuLoginItem.classList.remove('hidden');
-                        if (menuLogoutItem) menuLogoutItem.classList.add('hidden');
-
-                        if (initialAuthToken) {
-                            try {
-                                await signInWithCustomToken(auth, initialAuthToken);
-                                console.log("Autenticado com token personalizado.");
-                            } catch (customTokenError) {
-                                console.warn("Falha na autenticação com token personalizado:", customTokenError);
-                            }
-                        }
-                    }
-                    isAuthReady = true;
-                    // Mostra o conteúdo da aplicação após a autenticação
-                    document.getElementById('loading-message')?.classList.add('hidden');
-                    document.getElementById('app-content')?.classList.remove('hidden');
-                    document.getElementById('main-header')?.classList.remove('hidden');
-                    document.getElementById('toggle-floating-chat-button')?.classList.remove('hidden');
-                    document.getElementById('main-footer')?.classList.remove('hidden');
-
-                    setupChatListener();
-                    setupPostsListener();
-                });
-            } catch (error) {
-                console.error("Erro ao inicializar Firebase:", error);
-                document.getElementById('loading-message').textContent = 'Erro ao carregar a aplicação.';
+        // Função para inicializar o Supabase e configurar a autenticação
+        const initSupabase = async () => {
+            // Checa usuário autenticado
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                userId = user.id;
+                userName = user.user_metadata?.firstName || user.email || 'Usuário';
+                document.getElementById('user-id-display').textContent = `${userName} (${userId.substring(0, 8)}...)`;
+                document.getElementById('add-post-section')?.classList.remove('hidden');
+                document.getElementById('menu-login-item')?.classList.add('hidden');
+                document.getElementById('menu-logout-item')?.classList.remove('hidden');
+                await fetchAndSetUserAvatar();
+            } else {
+                userId = null;
+                userName = null;
+                document.getElementById('user-id-display').textContent = 'Não disponível';
+                document.getElementById('user-name-display').textContent = 'Visitante';
+                const avatarImg = document.getElementById('profile-avatar');
+                if (avatarImg) {
+                    avatarImg.src = 'https://placehold.co/40x40/cccccc/000000?text=👤';
+                }
+                document.getElementById('add-post-section')?.classList.add('hidden');
+                document.getElementById('menu-login-item')?.classList.remove('hidden');
+                document.getElementById('menu-logout-item')?.classList.add('hidden');
             }
+            isAuthReady = true;
+            document.getElementById('loading-message')?.classList.add('hidden');
+            document.getElementById('app-content')?.classList.remove('hidden');
+            document.getElementById('main-header')?.classList.remove('hidden');
+            document.getElementById('toggle-floating-chat-button')?.classList.remove('hidden');
+            document.getElementById('main-footer')?.classList.remove('hidden');
+            setupChatListener();
+            setupPostsListener();
         };
 
-        const setupChatListener = () => {
-            if (db && userId && isAuthReady) {
-                console.log("Configurando listener de mensagens para userId:", userId);
-                const publicChatCollectionRef = collection(db, `artifacts/${appId}/public/data/chatMessages`);
-                const q = query(publicChatCollectionRef); 
-
-                onSnapshot(q, (snapshot) => {
-                    const messagesContainer = document.getElementById('floating-messages-container');
-                    if (!messagesContainer) return;
-
-                    messagesContainer.innerHTML = '';
-                    const fetchedMessages = [];
-                    snapshot.docs.forEach(doc => {
-                        fetchedMessages.push({ id: doc.id, ...doc.data() });
-                    });
-                    fetchedMessages.sort((a, b) => (a.timestamp?.toDate() || 0) - (b.timestamp?.toDate() || 0));
-
-                    if (fetchedMessages.length === 0) {
-                        messagesContainer.innerHTML = '<p class="text-gray-500 italic">Nenhuma mensagem ainda. Seja o primeiro a enviar!</p>';
-                    } else {
-                        fetchedMessages.forEach(msg => {
-                            const msgDiv = document.createElement('div');
-                            msgDiv.className = `mb-2 p-2 rounded-lg max-w-[80%] ${msg.userId === userId ? 'bg-purple-200 ml-auto text-right' : 'bg-gray-200 mr-auto text-left'}`;
-                            const senderDisplayName = msg.senderName || `Usuário: ${msg.userId.substring(0, 8)}...`;
-                            const timestampText = msg.timestamp ? new Date(msg.timestamp.seconds * 1000).toLocaleString() : 'Data desconhecida';
-                            msgDiv.innerHTML = `
-                                <p class="text-sm font-semibold text-purple-800">${msg.userId === userId ? 'Você' : senderDisplayName}</p>
-                                <p class="text-gray-800">${msg.text}</p>
-                                <span class="text-xs text-gray-500">${timestampText}</span>
-                            `;
-                            messagesContainer.appendChild(msgDiv);
-                        });
-                    }
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                    console.log("Mensagens atualizadas:", fetchedMessages);
-                }, (error) => {
-                    console.error("Erro ao ouvir mensagens:", error);
+        const setupChatListener = async () => {
+            if (!userId || !isAuthReady) return;
+            const { data, error } = await supabase
+                .from('chatMessages')
+                .select('*')
+                .order('timestamp', { ascending: true });
+            const messagesContainer = document.getElementById('floating-messages-container');
+            if (!messagesContainer) return;
+            messagesContainer.innerHTML = '';
+            if (error || !data) {
+                messagesContainer.innerHTML = '<p class="text-gray-500 italic">Erro ao carregar mensagens.</p>';
+                return;
+            }
+            if (data.length === 0) {
+                messagesContainer.innerHTML = '<p class="text-gray-500 italic">Nenhuma mensagem ainda. Seja o primeiro a enviar!</p>';
+            } else {
+                data.forEach(msg => {
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = `mb-2 p-2 rounded-lg max-w-[80%] ${msg.user_id === userId ? 'bg-purple-200 ml-auto text-right' : 'bg-gray-200 mr-auto text-left'}`;
+                    const senderDisplayName = msg.sender_name || `Usuário: ${msg.user_id?.substring(0, 8)}...`;
+                    const timestampText = msg.timestamp ? new Date(msg.timestamp).toLocaleString() : 'Data desconhecida';
+                    msgDiv.innerHTML = `
+                        <p class="text-sm font-semibold text-purple-800">${msg.user_id === userId ? 'Você' : senderDisplayName}</p>
+                        <p class="text-gray-800">${msg.text}</p>
+                        <span class="text-xs text-gray-500">${timestampText}</span>
+                    `;
+                    messagesContainer.appendChild(msgDiv);
                 });
             }
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         };
 
-        const setupPostsListener = () => {
-            if (db && userId && isAuthReady) {
-                console.log("Configurando listener de posts para userId:", userId);
-                const publicPostsCollectionRef = collection(db, `artifacts/${appId}/public/data/posts`);
-                const q = query(publicPostsCollectionRef);
-
-                onSnapshot(q, (snapshot) => {
-                    const postsContainer = document.getElementById('posts-container');
-                    if (!postsContainer) return;
-
-                    postsContainer.innerHTML = '';
-                    const fetchedPosts = [];
-                    snapshot.docs.forEach(doc => {
-                        fetchedPosts.push({ id: doc.id, ...doc.data() });
-                    });
-                    fetchedPosts.sort((a, b) => (a.timestamp?.toDate() || 0) - (b.timestamp?.toDate() || 0));
-
-                    if (fetchedPosts.length === 0) {
-                        postsContainer.innerHTML = '<p class="text-gray-500 italic">Nenhum post ainda. Compartilhe algo!</p>';
-                    } else {
-                        fetchedPosts.forEach(post => {
-                            const postDiv = document.createElement('div');
-                            postDiv.className = "mb-4 p-3 border-b border-gray-200 last:border-b-0";
-                            const senderDisplayName = post.senderName || `Usuário: ${post.userId.substring(0, 8)}...`;
-                            const timestampText = post.timestamp ? new Date(post.timestamp.seconds * 1000).toLocaleString() : 'Data desconhecida';
-                            postDiv.innerHTML = `
-                                <p class="text-sm font-semibold text-blue-800">${post.userId === userId ? 'Você' : senderDisplayName}</p>
-                                <p class="text-gray-800 text-lg">${post.content}</p>
-                                <span class="text-xs text-gray-500">${timestampText}</span>
-                            `;
-                            postsContainer.appendChild(postDiv);
-                        });
-                    }
-                    postsContainer.scrollTop = postsContainer.scrollHeight;
-                    console.log("Posts atualizadas:", fetchedPosts);
-                }, (error) => {
-                    console.error("Erro ao ouvir posts:", error);
+        const setupPostsListener = async () => {
+            if (!userId || !isAuthReady) return;
+            const { data, error } = await supabase
+                .from('posts')
+                .select('*')
+                .order('timestamp', { ascending: true });
+            const postsContainer = document.getElementById('posts-container');
+            if (!postsContainer) return;
+            postsContainer.innerHTML = '';
+            if (error || !data) {
+                postsContainer.innerHTML = '<p class="text-gray-500 italic">Erro ao carregar posts.</p>';
+                return;
+            }
+            if (data.length === 0) {
+                postsContainer.innerHTML = '<p class="text-gray-500 italic">Nenhum post ainda. Compartilhe algo!</p>';
+            } else {
+                data.forEach(post => {
+                    const postDiv = document.createElement('div');
+                    postDiv.className = "mb-4 p-3 border-b border-gray-200 last:border-b-0";
+                    const senderDisplayName = post.sender_name || `Usuário: ${post.user_id?.substring(0, 8)}...`;
+                    const timestampText = post.timestamp ? new Date(post.timestamp).toLocaleString() : 'Data desconhecida';
+                    postDiv.innerHTML = `
+                        <p class="text-sm font-semibold text-blue-800">${post.user_id === userId ? 'Você' : senderDisplayName}</p>
+                        <p class="text-gray-800 text-lg">${post.content}</p>
+                        <span class="text-xs text-gray-500">${timestampText}</span>
+                    `;
+                    postsContainer.appendChild(postDiv);
                 });
             }
+            postsContainer.scrollTop = postsContainer.scrollHeight;
         };
 
         const showNotification = (message, type = 'success') => {
@@ -588,21 +527,23 @@
             if (!newMessageInput) return;
             let newMessage = newMessageInput.value.trim();
             newMessage = sanitizeInput(newMessage);
-
-            if (!db || !userId || !newMessage) {
+            if (!userId || !newMessage) {
                 showNotification("Por favor, digite uma mensagem.", 'error');
                 return;
             }
             try {
-                const chatCollectionRef = collection(db, `artifacts/${appId}/public/data/chatMessages`);
-                await addDoc(chatCollectionRef, {
-                    text: newMessage,
-                    userId: userId,
-                    senderName: sanitizeInput(userName || `Anônimo (${userId.substring(0,4)})`),
-                    timestamp: new Date(),
-                });
+                const { error } = await supabase.from('chatMessages').insert([
+                    {
+                        text: newMessage,
+                        user_id: userId,
+                        sender_name: sanitizeInput(userName || `Anônimo (${userId.substring(0,4)})`),
+                        timestamp: new Date().toISOString(),
+                    }
+                ]);
+                if (error) throw error;
                 newMessageInput.value = '';
                 showNotification("Mensagem enviada com sucesso!", 'success');
+                setupChatListener();
             } catch (error) {
                 showNotification("Erro ao enviar mensagem.", 'error');
                 console.error("Erro ao enviar mensagem:", error);
@@ -614,31 +555,27 @@
             if (!newPostContentTextarea) return;
             let newPostContent = newPostContentTextarea.value.trim();
             newPostContent = sanitizeInput(newPostContent);
-
             if (!userId) {
                 showNotification("Você precisa estar logado para postar.", 'error');
                 return;
             }
-
-            if (auth.currentUser && auth.currentUser.isAnonymous) {
-                showNotification("Usuários anônimos não podem criar posts. Por favor, registre-se ou faça login.", 'error');
-                return;
-            }
-
-            if (!db || !newPostContent) {
+            if (!newPostContent) {
                 showNotification("Por favor, digite o conteúdo do post.", 'error');
                 return;
             }
             try {
-                const postsCollectionRef = collection(db, `artifacts/${appId}/public/data/posts`);
-                await addDoc(postsCollectionRef, {
-                    content: newPostContent,
-                    userId: userId,
-                    senderName: sanitizeInput(userName),
-                    timestamp: new Date(),
-                });
+                const { error } = await supabase.from('posts').insert([
+                    {
+                        content: newPostContent,
+                        user_id: userId,
+                        sender_name: sanitizeInput(userName),
+                        timestamp: new Date().toISOString(),
+                    }
+                ]);
+                if (error) throw error;
                 newPostContentTextarea.value = '';
                 showNotification("Post publicado com sucesso!", 'success');
+                setupPostsListener();
             } catch (error) {
                 showNotification("Erro ao publicar post.", 'error');
                 console.error("Erro ao publicar post:", error);
@@ -701,25 +638,29 @@
             }
         };
 
+        // Login anônimo Supabase: cria usuário temporário com email fake
         const signInAnonymouslyUser = async () => {
             try {
-                const userCredential = await signInAnonymously(auth);
-                const user = userCredential.user;
+                // Gera email e senha aleatórios para usuário anônimo
+                const randomId = Math.random().toString(36).substring(2, 12);
+                const anonEmail = `anon_${randomId}@anon.com`;
+                const anonPassword = Math.random().toString(36).substring(2, 12) + 'A!1';
+                const { data, error } = await supabase.auth.signUp({ email: anonEmail, password: anonPassword });
+                if (error) throw error;
                 showNotification("Login como convidado realizado com sucesso!", 'success');
                 toggleAuthModal(false);
-
+                // Mostra modal para nome do anônimo
                 const usernameModal = document.getElementById('username-modal');
                 const anonymousUsernameInput = document.getElementById('anonymous-username-input');
-
                 if (usernameModal) usernameModal.classList.remove('hidden');
                 if (anonymousUsernameInput) anonymousUsernameInput.focus();
-
             } catch (error) {
                 showNotification("Erro ao entrar como convidado. Tente novamente.", 'error');
                 console.error("Erro no login anônimo:", error);
             }
         };
 
+        // Salva nome do usuário anônimo no perfil Supabase
         const saveAnonymousUsername = async () => {
             let inputName = document.getElementById('anonymous-username-input').value.trim();
             inputName = sanitizeInput(inputName);
@@ -727,36 +668,30 @@
                 showNotification("Por favor, digite um nome.", 'error');
                 return;
             }
-
-            if (auth.currentUser && db) {
-                try {
-                    const userProfileRef = doc(db, `artifacts/${appId}/users/${auth.currentUser.uid}/profile`, 'details');
-                    await setDoc(userProfileRef, {
-                        firstName: inputName,
-                        isAnonymousProfile: true,
-                        registeredAt: new Date(),
-                    }, { merge: true });
-
-                    userName = inputName;
-                    document.getElementById('user-id-display').textContent = `${userName} (Anônimo)`;
-                    showNotification("Nome salvo com sucesso!", 'success');
-                    
-                    const usernameModal = document.getElementById('username-modal');
-                    const anonymousUsernameInput = document.getElementById('anonymous-username-input');
-                    if (usernameModal) usernameModal.classList.add('hidden');
-                    if (anonymousUsernameInput) anonymousUsernameInput.value = '';
-                } catch (error) {
-                    showNotification("Erro ao salvar o nome.", 'error');
-                    console.error("Erro ao salvar nome anônimo:", error);
-                }
-            } else {
-                showNotification("Erro: Usuário não autenticado ou DB não disponível.", 'error');
+            if (!userId) {
+                showNotification("Erro: Usuário não autenticado.", 'error');
+                return;
+            }
+            try {
+                // Atualiza o campo firstName no perfil
+                const { error } = await supabase.from('profiles').update({ firstName: inputName, isAnonymousProfile: true }).eq('id', userId);
+                if (error) throw error;
+                userName = inputName;
+                document.getElementById('user-id-display').textContent = `${userName} (Anônimo)`;
+                showNotification("Nome salvo com sucesso!", 'success');
+                const usernameModal = document.getElementById('username-modal');
+                const anonymousUsernameInput = document.getElementById('anonymous-username-input');
+                if (usernameModal) usernameModal.classList.add('hidden');
+                if (anonymousUsernameInput) anonymousUsernameInput.value = '';
+            } catch (error) {
+                showNotification("Erro ao salvar o nome.", 'error');
+                console.error("Erro ao salvar nome anônimo:", error);
             }
         };
 
+        // Registro de usuário Supabase
         const handleRegister = async (event) => {
             event.preventDefault();
-
             const email = sanitizeInput(document.getElementById('register-email').value);
             const password = document.getElementById('register-password').value;
             const confirmPassword = document.getElementById('register-confirm-password').value;
@@ -772,7 +707,6 @@
             const churchName = sanitizeInput(document.getElementById('register-church-name').value);
             const churchRole = sanitizeInput(document.getElementById('register-church-role').value);
             const termsAccepted = document.getElementById('register-terms').checked;
-
             if (password !== confirmPassword) {
                 showNotification("As senhas não coincidem.", 'error');
                 return;
@@ -781,76 +715,54 @@
                 showNotification("Você deve aceitar os termos e condições.", 'error');
                 return;
             }
-
             try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-
-                const userProfileRef = doc(db, `artifacts/${appId}/users/${user.uid}/profile`, 'details');
-                await setDoc(userProfileRef, {
-                    firstName: firstName,
-                    lastName: lastName,
-                    dob: dob,
-                    gender: gender,
-                    phone: phone,
-                    address: {
-                        street: street,
-                        city: city,
-                        state: state,
-                        zip: zip,
-                    },
-                    churchName: churchName,
-                    churchRole: churchRole,
-                    registeredAt: new Date(),
-                    isAnonymousProfile: false,
-                });
-
-                showNotification("Registro e login bem-sucedidos!", 'success');
+                // Cria usuário no Supabase Auth
+                const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { firstName, lastName, dob, gender, phone, street, city, state, zip, churchName, churchRole, isAnonymousProfile: false } } });
+                if (error) throw error;
+                showNotification("Registro realizado! Verifique seu e-mail para ativar a conta.", 'success');
                 toggleAuthModal(false);
                 document.getElementById('register-form').reset();
-            }
-            catch (error) {
+            } catch (error) {
                 let errorMessage = "Erro ao registrar. Tente novamente.";
-                if (error.code === 'auth/email-already-in-use') {
+                if (error.message && error.message.includes('already registered')) {
                     errorMessage = "Este e-mail já está em uso.";
-                } else if (error.code === 'auth/invalid-email') {
-                    errorMessage = "Endereço de e-mail inválido.";
-                } else if (error.code === 'auth/weak-password') {
-                    errorMessage = "A senha deve ter pelo menos 6 caracteres.";
                 }
                 showNotification(errorMessage, 'error');
                 console.error("Erro no registro:", error);
             }
         };
 
+        // Login Supabase
         const handleLogin = async (event) => {
             event.preventDefault();
-
             const email = sanitizeInput(document.getElementById('login-email').value);
             const password = document.getElementById('login-password').value;
-
             try {
-                await signInWithEmailAndPassword(auth, email, password);
+                const { error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) throw error;
                 showNotification("Login bem-sucedido!", 'success');
                 toggleAuthModal(false);
                 document.getElementById('login-form').reset();
+                await initSupabase();
             } catch (error) {
                 let errorMessage = "Erro ao fazer login. Verifique suas credenciais.";
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                if (error.message && error.message.includes('Invalid login credentials')) {
                     errorMessage = "E-mail ou senha inválidos.";
-                } else if (error.code === 'auth/invalid-email') {
-                    errorMessage = "Endereço de e-mail inválido.";
                 }
                 showNotification(errorMessage, 'error');
                 console.error("Erro no login:", error);
             }
         };
 
+        // Logout Supabase
         const handleLogout = async () => {
             try {
-                await signOut(auth);
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
                 showNotification("Logout realizado com sucesso!", 'info');
-                console.log("Usuário deslogado.");
+                userId = null;
+                userName = null;
+                await initSupabase();
             } catch (error) {
                 showNotification("Erro ao fazer logout.", 'error');
                 console.error("Erro no logout:", error);
@@ -889,6 +801,23 @@
 
         // Adiciona listeners ao carregar o DOM
         document.addEventListener('DOMContentLoaded', () => {
+            // Upload de avatar
+            const avatarUpload = document.getElementById('avatar-upload');
+            if (avatarUpload) {
+                avatarUpload.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        // Preview imediato
+                        const reader = new FileReader();
+                        reader.onload = function(ev) {
+                            document.getElementById('profile-avatar').src = ev.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                        // Upload para Supabase
+                        uploadAvatar(file);
+                    }
+                });
+            }
             // Segurança: Força todos os links externos a terem rel="noopener noreferrer" e target="_blank"
             document.querySelectorAll('a[href^="http"]').forEach(link => {
                 link.setAttribute('rel', 'noopener noreferrer');
@@ -903,6 +832,9 @@
                     if (!authModal.classList.contains('hidden')) {
                         const firstInput = authModal.querySelector('input, button, select, textarea');
                         if (firstInput) firstInput.focus();
+                        // Força foco no modal para acessibilidade
+                        const modalContent = authModal.querySelector('.modal-content');
+                        if (modalContent) modalContent.focus();
                     }
                 });
             }
@@ -911,6 +843,9 @@
                     if (!usernameModal.classList.contains('hidden')) {
                         const firstInput = usernameModal.querySelector('input, button');
                         if (firstInput) firstInput.focus();
+                        // Força foco no modal para acessibilidade
+                        const modalContent = usernameModal.querySelector('.modal-content');
+                        if (modalContent) modalContent.focus();
                     }
                 });
             }
@@ -919,9 +854,31 @@
                 if (e.key === 'Escape') {
                     if (authModal && !authModal.classList.contains('hidden')) {
                         authModal.classList.add('hidden');
+                        // Retorna foco ao botão de login
+                        document.getElementById('menu-login-button')?.focus();
                     }
                     if (usernameModal && !usernameModal.classList.contains('hidden')) {
                         usernameModal.classList.add('hidden');
+                        // Retorna foco ao botão de login
+                        document.getElementById('menu-login-button')?.focus();
+                    }
+                }
+                // Acessibilidade: Tab não sai do modal
+                const modalOpen = document.querySelector('.modal-overlay:not(.hidden) .modal-content');
+                if (modalOpen && (e.key === 'Tab')) {
+                    const focusableEls = modalOpen.querySelectorAll('input, button, select, textarea, a[href], [tabindex]:not([tabindex="-1"])');
+                    const firstEl = focusableEls[0];
+                    const lastEl = focusableEls[focusableEls.length - 1];
+                    if (e.shiftKey) {
+                        if (document.activeElement === firstEl) {
+                            e.preventDefault();
+                            lastEl.focus();
+                        }
+                    } else {
+                        if (document.activeElement === lastEl) {
+                            e.preventDefault();
+                            firstEl.focus();
+                        }
                     }
                 }
             });
@@ -943,8 +900,8 @@
                     addPostButton.disabled = false;
                 });
             }
-            // Inicializa Firebase
-            initFirebase();
+            // Inicializa Supabase
+            initSupabase();
 
             // Esconde a mensagem de carregamento e mostra o conteúdo principal
             document.getElementById('loading-message')?.classList.add('hidden');
@@ -987,4 +944,16 @@
         });
     </script>
 </body>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+        // Service worker registrado
+      }, function(err) {
+        // Falha ao registrar
+        console.warn('ServiceWorker registration failed: ', err);
+      });
+    });
+  }
+</script>
 </html>

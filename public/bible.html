@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conexão Eclesiástica - Bíblia</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="/src/global.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
@@ -44,25 +45,25 @@
 </head>
 <body class="min-h-screen bg-gradient-to-br from-green-100 to-teal-200 p-4">
 
-    <div id="notification-bar" class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-green-500 text-white text-center py-3 rounded-b-lg shadow-lg z-50 opacity-0 notification-transition hidden">
-        </div>
+    <div id="notification-bar" class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-green-500 text-white text-center py-3 rounded-b-lg shadow-lg z-50 opacity-0 notification-transition hidden text-sm sm:text-base">
+    </div>
 
-    <div class="w-full max-w-4xl bg-white rounded-xl shadow-2xl p-8 text-center relative">
-        <h2 class="text-3xl font-bold text-center text-teal-700 mb-6">Central Bíblica 📖✨</h2>
-        <p class="text-gray-700 mb-8">Explore as escrituras e ferramentas de estudo.</p>
+    <div class="w-full max-w-4xl bg-white rounded-xl shadow-2xl p-2 sm:p-4 md:p-8 text-center relative overflow-x-hidden">
+        <h2 class="text-2xl sm:text-3xl font-bold text-center text-teal-700 mb-4 sm:mb-6">Central Bíblica 📖✨</h2>
+        <p class="text-gray-700 mb-4 sm:mb-8 text-base sm:text-lg">Explore as escrituras e ferramentas de estudo.</p>
 
-        <div class="mt-8 bg-green-50 p-6 rounded-lg shadow-inner">
-            <h3 class="text-2xl font-bold text-green-700 mb-4">Estudo Bíblico Inteligente</h3>
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
+        <div class="mt-4 sm:mt-8 bg-green-50 p-3 sm:p-6 rounded-lg shadow-inner">
+            <h3 class="text-xl sm:text-2xl font-bold text-green-700 mb-2 sm:mb-4">Estudo Bíblico Inteligente</h3>
+            <div class="flex flex-col md:flex-row gap-2 sm:gap-4 mb-2 sm:mb-4">
                 <textarea
                     id="bible-question-input"
                     placeholder="Pergunte sobre um versículo, tema ou conceito bíblico (ex: 'Explique João 3:16', 'O que é a Graça de Deus?')"
                     rows="4"
-                    class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 resize-y"
+                    class="flex-grow p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 resize-y text-sm sm:text-base w-full"
                 ></textarea>
                 <button
                     id="generate-bible-study-button"
-                    class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition duration-300 ease-in-out shadow-md self-end md:self-auto"
+                    class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition duration-300 ease-in-out shadow-md w-full md:w-auto text-sm sm:text-base"
                 >
                     Gerar Estudo
                 </button>
@@ -76,18 +77,18 @@
             </div>
         </div>
 
-        <div class="mt-8 bg-purple-100 p-6 rounded-lg shadow-inner">
-            <h3 class="text-2xl font-bold text-purple-700 mb-4">Gerador de Orações Personalizadas</h3>
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
+        <div class="mt-4 sm:mt-8 bg-purple-100 p-3 sm:p-6 rounded-lg shadow-inner">
+            <h3 class="text-xl sm:text-2xl font-bold text-purple-700 mb-2 sm:mb-4">Gerador de Orações Personalizadas</h3>
+            <div class="flex flex-col md:flex-row gap-2 sm:gap-4 mb-2 sm:mb-4">
                 <textarea
                     id="prayer-topic-input"
                     placeholder="Descreva o tema da sua oração (ex: 'gratidão pela família', 'força em tempos difíceis', 'sabedoria para decisões')"
                     rows="4"
-                    class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-700 resize-y"
+                    class="flex-grow p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-700 resize-y text-sm sm:text-base w-full"
                 ></textarea>
                 <button
                     id="generate-prayer-button"
-                    class="bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-800 transition duration-300 ease-in-out shadow-md self-end md:self-auto"
+                    class="bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-800 transition duration-300 ease-in-out shadow-md w-full md:w-auto text-sm sm:text-base"
                 >
                     Gerar Oração
                 </button>
@@ -101,9 +102,9 @@
             </div>
         </div>
 
-        <div class="mt-8 bg-yellow-50 p-6 rounded-lg shadow-inner">
-            <h3 class="text-2xl font-bold text-yellow-700 mb-4">Leitura Bíblica</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div class="mt-4 sm:mt-8 bg-yellow-50 p-3 sm:p-6 rounded-lg shadow-inner">
+            <h3 class="text-xl sm:text-2xl font-bold text-yellow-700 mb-2 sm:mb-4">Leitura Bíblica</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-4 mb-2 sm:mb-4">
                 <div>
                     <label for="bible-book-select" class="block text-gray-700 text-sm font-bold mb-2 text-left">Livro:</label>
                     <select id="bible-book-select" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500">
@@ -116,16 +117,16 @@
                 </div>
                 <div>
                     <label for="bible-chapter-input" class="block text-gray-700 text-sm font-bold mb-2 text-left">Capítulo:</label>
-                    <input type="number" id="bible-chapter-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500" placeholder="23" value="1">
+                <input type="number" id="bible-chapter-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500 text-sm sm:text-base" placeholder="23" value="1">
                 </div>
                 <div>
                     <label for="bible-verses-input" class="block text-gray-700 text-sm font-bold mb-2 text-left">Versículos (opcional, ex: 1-3 ou 5):</label>
-                    <input type="text" id="bible-verses-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500" placeholder="1-6">
+                <input type="text" id="bible-verses-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-500 text-sm sm:text-base" placeholder="1-6">
                 </div>
             </div>
             <button
                 id="fetch-bible-verse-button"
-                class="bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-700 transition duration-300 ease-in-out shadow-md w-full md:w-auto"
+                class="bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-700 transition duration-300 ease-in-out shadow-md w-full md:w-auto text-sm sm:text-base"
             >
                 Buscar Versículo(s)
             </button>
@@ -138,18 +139,18 @@
             </div>
         </div>
 
-        <div class="mt-8 bg-red-50 p-6 rounded-lg shadow-inner">
-            <h3 class="text-2xl font-bold text-red-700 mb-4">Buscar na Bíblia por Palavra-chave</h3>
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
+        <div class="mt-4 sm:mt-8 bg-red-50 p-3 sm:p-6 rounded-lg shadow-inner">
+            <h3 class="text-xl sm:text-2xl font-bold text-red-700 mb-2 sm:mb-4">Buscar na Bíblia por Palavra-chave</h3>
+            <div class="flex flex-col md:flex-row gap-2 sm:gap-4 mb-2 sm:mb-4">
                 <input
                     type="text"
                     id="bible-search-input"
                     placeholder="Digite uma palavra ou frase para buscar (ex: 'amor', 'fé', 'salvação')"
-                    class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                    class="flex-grow p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base w-full"
                 />
                 <button
                     id="search-bible-button"
-                    class="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition duration-300 ease-in-out shadow-md self-end md:self-auto"
+                    class="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition duration-300 ease-in-out shadow-md w-full md:w-auto text-sm sm:text-base"
                 >
                     Buscar
                 </button>
@@ -163,7 +164,7 @@
             </div>
         </div>
 
-        <a href="index.html" class="mt-8 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg inline-block">Voltar para o Início</a>
+        <a href="index.html" class="mt-4 sm:mt-8 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg inline-block w-full sm:w-auto text-sm sm:text-base">Voltar para o Início</a>
     </div>
 
     <script type="module">
