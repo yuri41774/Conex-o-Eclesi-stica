@@ -14,7 +14,27 @@ Este projeto é uma plataforma web para comunidade cristã, com mural de notíci
 - Interface responsiva e acessível
 
 ## Dependências
+
 - [Supabase](https://supabase.com/) — autenticação, banco de dados e storage
+- [Vercel](https://vercel.com/) — deploy serverless e hospedagem estática
+
+## Deploy com Vercel
+1. Instale o CLI do Vercel (já instalado como dependência):
+   ```bash
+   npx vercel login
+   ```
+2. Configure o projeto para deploy:
+   ```bash
+   npx vercel --prod
+   ```
+3. O diretório de publicação é `public/`.
+
+## Configuração Supabase
+O projeto já está pronto para autenticação, banco de dados e storage via Supabase. Configure as variáveis de ambiente no painel da Vercel se necessário.
+
+## Observações
+- A bíblia foi atualizada a partir do repositório [thiagobodruk/biblia](https://github.com/thiagobodruk/biblia).
+- O projeto não utiliza mais Firebase nem Cordova.
 
 ## Como rodar
 1. Instale as dependências:
